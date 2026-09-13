@@ -313,6 +313,28 @@ class RepoTile extends StatelessWidget {
           (r) => true,
         );
       },
+      onLongPress: () async {
+        var name = repoManager.repoFolderName(id);
+        var ok = await showDialog<bool>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text(context.loc.settingsDeleteRepo),
+            content: Text('Delete "$name"? This cannot be undone.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: Text(context.loc.settingsCancel),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: Text(context.loc.settingsDeleteRepo),
+              ),
+            ],
+          ),
+        );
+        if (ok != true) return;
+        await repoManager.deleteRepo(id);
+      },
     );
 
     return Container(

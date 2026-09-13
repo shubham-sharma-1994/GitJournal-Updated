@@ -128,6 +128,35 @@ class RepositoryManager with ChangeNotifier {
     await buildActiveRepository();
   }
 
+
+  Future<void> deleteRepo(String id) async {
+    if (!repoIds.contains(id)) return;
+
+    Log.i("Deleting repo: $id");
+
+    // If deleting active repo, use existing path that tears down files
+    if (id == currentId) {
+      await deleteCurrent();
+      return;
+    }
+
+    // Load briefly to delete on-disk data, then remove from list
+    var previousId = currentId;
+    currentId = id;
+    await buildActiveRepository(loadFromCache: false, syncOnBoot: false);
+    await _repo?.delete();
+    repoIds.remove(id);
+
+    if (repoIds.isEmpty) {
+      await addRepoAndSwitch();
+      return;
+    }
+
+    currentId = repoIds.contains(previousId) ? previousId : repoIds.first;
+    await _save();
+    await buildActiveRepository();
+  }
+
   // Not sure when to call this!
   Future<void> cleanupInvalidRepos() async {
     var invalidIds = <String>[];
