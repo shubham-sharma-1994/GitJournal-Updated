@@ -5,7 +5,7 @@
 
 name: Android
 
-# MANUAL ONLY — does not run on push/PR
+# Manual only — pick branch in the UI (use upgrade-flutter-latest for the upgraded build)
 on:
   workflow_dispatch:
 
@@ -20,8 +20,8 @@ jobs:
       - name: Give more Disk Space
         run: |
           sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
           sudo rm -rf /opt/ghc
-          sudo rm -rf /usr/local/share/boost || true
 
       - name: checkout
         uses: actions/checkout@v4
