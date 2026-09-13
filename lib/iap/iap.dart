@@ -43,7 +43,7 @@ class GitJournalInAppPurchases {
       Log.e("Failed to get subscription status", ex: e, stacktrace: stackTrace);
       Log.i("Disabling Pro mode");
 
-      AppConfig.instance.proMode = false;
+      AppConfig.instance.proMode = true; // unlocked
       AppConfig.instance.save();
     }
   }

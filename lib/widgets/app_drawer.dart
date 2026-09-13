@@ -146,21 +146,6 @@ class _AppDrawerState extends State<AppDrawer>
           // If they are multiple show the current one which a tick mark
           _buildRepoList(),
           if (setupGitButton != null) ...[setupGitButton, divider],
-          if (!appConfig.proMode)
-            _buildDrawerTile(
-              context,
-              icon: Icons.power,
-              title: context.loc.drawerPro,
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(context, PurchaseScreen.routePath);
-
-                logEvent(
-                  Event.PurchaseScreenOpen,
-                  parameters: {"from": "drawer"},
-                );
-              },
-            ),
           if (appConfig.experimentalAccounts)
             _buildDrawerTile(
               context,
@@ -169,7 +154,6 @@ class _AppDrawerState extends State<AppDrawer>
               onTap: () => _navTopLevel(context, LoginPage.routePath),
               selected: currentRoute == LoginPage.routePath,
             ),
-          if (!appConfig.proMode) divider,
           if (repo != null)
             _buildDrawerTile(
               context,
