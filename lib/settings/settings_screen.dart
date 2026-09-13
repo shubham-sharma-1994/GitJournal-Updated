@@ -230,11 +230,13 @@ class SettingsTile extends StatelessWidget {
       color: listTileTheme.textColor,
     );
 
+    // Local var required for type promotion (fields are not promoted)
+    final data = iconData;
     final Widget icon;
-    if (iconData is FaIconData) {
-      icon = FaIcon(iconData, color: textStyle.color);
+    if (data is FaIconData) {
+      icon = FaIcon(data, color: textStyle.color);
     } else {
-      icon = Icon(iconData as IconData, color: textStyle.color);
+      icon = Icon(data as IconData, color: textStyle.color);
     }
 
     return ListTile(
