@@ -7,7 +7,7 @@
 import 'package:gitjournal/editors/common.dart';
 
 TextEditorState? autoAddBulletList(
-    String oldText, String curText, final int cursorPos) {
+    String oldText, String curText, int cursorPos) {
   // We only want to do this on inserts
   if (curText.length <= oldText.length) {
     return null;
