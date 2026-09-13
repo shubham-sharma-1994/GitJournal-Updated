@@ -5,7 +5,14 @@
 
 name: Lint
 
-on: [push, pull_request]
+on:
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: lint-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   Lint:
