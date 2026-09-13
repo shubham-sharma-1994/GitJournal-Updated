@@ -1,4 +1,5 @@
 // SPDX-FileCopyrightText: 2019-2021 Vishesh Handa <me@vhanda.in>
+// SPDX-FileCopyrightText: 2026 Shubham Sharma
 //
 // SPDX-License-Identifier: Apache-2.0
 
@@ -14,33 +15,41 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 if (!keystoreProperties.containsKey('keyAlias')) {
-    // to simplify local development
-    keystoreProperties['keyAlias'] = 'local'
-    keystoreProperties['keyPassword'] = 'local'
-    keystoreProperties['storeFile'] = 'local'
-    keystoreProperties['storePassword'] = 'local'
+    // to simplify local development / CI without signing secrets
+    keystoreProperties['keyAlias'] = 'androiddebugkey'
+    keystoreProperties['keyPassword'] = 'android'
+    keystoreProperties['storeFile'] = 'debug.keystore'
+    keystoreProperties['storePassword'] = 'android'
 }
 
 android {
     namespace 'io.gitjournal.gitjournal'
-    compileSdkVersion flutter.compileSdkVersion
-    ndkVersion "28.2.13676358"
+    compileSdk = flutter.compileSdkVersion
+    ndkVersion = "28.2.13676358"
 
-    lintOptions {
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
+    lint {
         disable 'InvalidPackage'
         checkReleaseBuilds false
     }
 
     defaultConfig {
         applicationId "io.gitjournal.gitjournal"
-        minSdkVersion flutter.minSdkVersion
-        targetSdkVersion flutter.targetSdkVersion
-        versionCode flutter.versionCode
-        versionName flutter.versionName
-        // testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        minSdk = flutter.minSdkVersion
+        targetSdk = flutter.targetSdkVersion
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
     }
 
-    flavorDimensions "app"
+    flavorDimensions += "app"
     productFlavors {
         prod {
             dimension "app"
@@ -73,21 +82,8 @@ android {
             }
         }
     }
-
-    dexOptions {
-        preDexLibraries true
-        jumboMode true
-        javaMaxHeapSize "12g"
-    }
 }
 
 flutter {
     source '../..'
 }
-
-// Are these required?
-// dependencies {
-//     testImplementation 'junit:junit:4.12'
-//     androidTestImplementation 'androidx.test:runner:1.1.0'
-//     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
-// }
