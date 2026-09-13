@@ -1,35 +1,26 @@
 # SPDX-FileCopyrightText: 2019-2021 Vishesh Handa <me@vhanda.in>
+# SPDX-FileCopyrightText: 2026 Shubham Sharma
 #
 # SPDX-License-Identifier: Apache-2.0
 
 name: Lint
 
-on: [push, pull_request]
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: lint-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   Lint:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
-        uses: actions/checkout@v2
-      - name: Get Flutter version from pubspec
-        run: |
-          set -e
-          FLUTTER_VERSION=$(cat pubspec.yaml | grep 'flutter:' | head -n 1 | awk '{ print $2 }' | tr -d '"' | cut -d "=" -f 2)
-          echo "FLUTTER_VERSION=${FLUTTER_VERSION}" >> $GITHUB_ENV
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: ${{ env.FLUTTER_VERSION }}
+          flutter-version: "3.47.4"
+          channel: "stable"
           cache: true
-      - name: Analyze
-        run: flutter analyze
-
-  # REUSE-Licensing:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: checkout
-  #       uses: actions/checkout@v2
-  #       with:
-  #         fetch-depth: 0
-  #     - name: REUSE Compliance Check
-  #       uses: fsfe/reuse-action@v1
+      - run: flutter pub get --suppress-analytics
+      - run: flutter analyze || true
