@@ -259,7 +259,7 @@ class _AppDrawerState extends State<AppDrawer>
 
   Widget _buildDrawerTile(
     BuildContext context, {
-    required IconData icon,
+    required Object icon, // IconData or FaIconData
     required String title,
     required void Function() onTap,
     bool isFontAwesome = false,
@@ -271,9 +271,12 @@ class _AppDrawerState extends State<AppDrawer>
       color: selected ? theme.colorScheme.secondary : listTileTheme.textColor,
     );
 
-    var iconW = !isFontAwesome
-        ? Icon(icon, color: textStyle.color)
-        : FaIcon(icon, color: textStyle.color);
+    final Widget iconW;
+    if (isFontAwesome) {
+      iconW = FaIcon(icon as FaIconData, color: textStyle.color);
+    } else {
+      iconW = Icon(icon as IconData, color: textStyle.color);
+    }
 
     var tile = ListTile(
       leading: iconW,
