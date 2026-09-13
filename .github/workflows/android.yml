@@ -15,13 +15,12 @@ concurrency:
   group: android-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  ANDROID_HOME: ${{ runner.temp }}/android-sdk
-  ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
-
 jobs:
   Build:
     runs-on: ubuntu-latest
+    env:
+      ANDROID_HOME: ${{ runner.temp }}/android-sdk
+      ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
     steps:
       - name: Free disk space
         run: |
@@ -44,24 +43,24 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: "zulu"
+          distribution: zulu
           java-version: "17"
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.47.4"
-          channel: "stable"
+          channel: stable
           cache: true
 
-      - name: Install Android cmdline-tools into writable path
+      - name: Install Android cmdline-tools
         run: |
           set -eux
           mkdir -p "$ANDROID_HOME/cmdline-tools"
           cd "$RUNNER_TEMP"
           curl -fsSL -o cmdtools.zip https://dl.google.com/android/repository/commandlinetools-linux-12266719_latest.zip
+          rm -rf cmdtools-tmp
           unzip -q cmdtools.zip -d cmdtools-tmp
-          # Google expects cmdline-tools/latest/...
           rm -rf "$ANDROID_HOME/cmdline-tools/latest"
           mv cmdtools-tmp/cmdline-tools "$ANDROID_HOME/cmdline-tools/latest"
           echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
@@ -70,17 +69,8 @@ jobs:
       - name: Install Android SDK packages
         run: |
           set -eux
-          yes | sdkmanager --sdk_root="$ANDROID_HOME" --licenses >/dev/null || true
-          sdkmanager --sdk_root="$ANDROID_HOME" \
-            "platform-tools" \
-            "platforms;android-35" \
-            "build-tools;35.0.0" \
-            "ndk;28.2.13676358" || \
-          sdkmanager --sdk_root="$ANDROID_HOME" \
-            "platform-tools" \
-            "platforms;android-35" \
-            "build-tools;35.0.0"
-          sdkmanager --sdk_root="$ANDROID_HOME" --list_installed || true
+          yes | sdkmanager --sdk_root="$ANDROID_HOME" --licenses || true
+          sdkmanager --sdk_root="$ANDROID_HOME" "platform-tools" "platforms;android-35" "build-tools;35.0.0"
           ls -la "$ANDROID_HOME"
 
       - name: Flutter Doctor
