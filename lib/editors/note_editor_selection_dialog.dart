@@ -78,11 +78,12 @@ class NoteEditorSelectionDialog extends StatelessWidget {
       color: selected ? theme.primaryColor : listTileTheme.textColor,
     );
 
+    final data = iconData;
     final Widget leadingIcon;
-    if (iconData is FaIconData) {
-      leadingIcon = FaIcon(iconData, color: textStyle.color);
+    if (data is FaIconData) {
+      leadingIcon = FaIcon(data, color: textStyle.color);
     } else {
-      leadingIcon = Icon(iconData as IconData, color: textStyle.color);
+      leadingIcon = Icon(data as IconData, color: textStyle.color);
     }
 
     return ListTile(
