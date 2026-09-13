@@ -5,25 +5,31 @@
 
 name: Android
 
-# Manual only — pick branch in the UI (use upgrade-flutter-latest for the upgraded build)
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - upgrade-flutter-latest
 
 concurrency:
   group: android-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  ANDROID_HOME: ${{ runner.temp }}/android-sdk
+  ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
+
 jobs:
   Build:
     runs-on: ubuntu-latest
     steps:
-      - name: Give more Disk Space
+      - name: Free disk space
         run: |
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /usr/local/lib/android
-          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/share/dotnet || true
+          sudo rm -rf /opt/ghc || true
+          df -h
 
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -41,20 +47,41 @@ jobs:
           distribution: "zulu"
           java-version: "17"
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Accept Android licenses
-        run: |
-          yes | sdkmanager --licenses || true
-          sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0" || true
-
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.47.4"
           channel: "stable"
           cache: true
+
+      - name: Install Android cmdline-tools into writable path
+        run: |
+          set -eux
+          mkdir -p "$ANDROID_HOME/cmdline-tools"
+          cd "$RUNNER_TEMP"
+          curl -fsSL -o cmdtools.zip https://dl.google.com/android/repository/commandlinetools-linux-12266719_latest.zip
+          unzip -q cmdtools.zip -d cmdtools-tmp
+          # Google expects cmdline-tools/latest/...
+          rm -rf "$ANDROID_HOME/cmdline-tools/latest"
+          mv cmdtools-tmp/cmdline-tools "$ANDROID_HOME/cmdline-tools/latest"
+          echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
+          echo "$ANDROID_HOME/platform-tools" >> "$GITHUB_PATH"
+
+      - name: Install Android SDK packages
+        run: |
+          set -eux
+          yes | sdkmanager --sdk_root="$ANDROID_HOME" --licenses >/dev/null || true
+          sdkmanager --sdk_root="$ANDROID_HOME" \
+            "platform-tools" \
+            "platforms;android-35" \
+            "build-tools;35.0.0" \
+            "ndk;28.2.13676358" || \
+          sdkmanager --sdk_root="$ANDROID_HOME" \
+            "platform-tools" \
+            "platforms;android-35" \
+            "build-tools;35.0.0"
+          sdkmanager --sdk_root="$ANDROID_HOME" --list_installed || true
+          ls -la "$ANDROID_HOME"
 
       - name: Flutter Doctor
         run: flutter doctor -v
@@ -67,6 +94,7 @@ jobs:
 
       - name: Build Debug APK
         run: |
+          set -eux
           BUILD_NUM=$(git rev-list --count HEAD)
           flutter build apk --debug --flavor prod --build-number="$BUILD_NUM" --dart-define=INSTALL_SOURCE=github
           cp build/app/outputs/flutter-apk/app-prod-debug.apk GitJournal-debug.apk
