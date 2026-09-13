@@ -18,9 +18,6 @@ concurrency:
 jobs:
   Build:
     runs-on: ubuntu-latest
-    env:
-      ANDROID_HOME: ${{ runner.temp }}/android-sdk
-      ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
     steps:
       - name: Free disk space
         run: |
@@ -53,16 +50,22 @@ jobs:
           channel: stable
           cache: true
 
+      - name: Configure Android SDK path
+        run: |
+          echo "ANDROID_HOME=$HOME/android-sdk" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> "$GITHUB_ENV"
+          mkdir -p "$HOME/android-sdk"
+
       - name: Install Android cmdline-tools
         run: |
           set -eux
           mkdir -p "$ANDROID_HOME/cmdline-tools"
-          cd "$RUNNER_TEMP"
+          cd /tmp
           curl -fsSL -o cmdtools.zip https://dl.google.com/android/repository/commandlinetools-linux-12266719_latest.zip
-          rm -rf cmdtools-tmp
-          unzip -q cmdtools.zip -d cmdtools-tmp
+          rm -rf /tmp/cmdtools-tmp
+          unzip -q cmdtools.zip -d /tmp/cmdtools-tmp
           rm -rf "$ANDROID_HOME/cmdline-tools/latest"
-          mv cmdtools-tmp/cmdline-tools "$ANDROID_HOME/cmdline-tools/latest"
+          mv /tmp/cmdtools-tmp/cmdline-tools "$ANDROID_HOME/cmdline-tools/latest"
           echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
           echo "$ANDROID_HOME/platform-tools" >> "$GITHUB_PATH"
 
