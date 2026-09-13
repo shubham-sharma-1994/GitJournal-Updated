@@ -5,9 +5,8 @@
 
 name: Lint
 
+# MANUAL ONLY
 on:
-  pull_request:
-    branches: [master]
   workflow_dispatch:
 
 concurrency:
@@ -18,18 +17,11 @@ jobs:
   Lint:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.47.4"
           channel: "stable"
           cache: true
-
-      - name: Get dependencies
-        run: flutter pub get --suppress-analytics
-
-      - name: Analyze
-        run: flutter analyze || true
+      - run: flutter pub get --suppress-analytics
+      - run: flutter analyze || true
