@@ -231,10 +231,10 @@ class SettingsTile extends StatelessWidget {
     );
 
     final Widget icon;
-    if (iconData is IconData) {
-      icon = Icon(iconData, color: textStyle.color);
+    if (iconData is FaIconData) {
+      icon = FaIcon(iconData, color: textStyle.color);
     } else {
-      icon = FaIcon(iconData as FaIconData, color: textStyle.color);
+      icon = Icon(iconData as IconData, color: textStyle.color);
     }
 
     return ListTile(
