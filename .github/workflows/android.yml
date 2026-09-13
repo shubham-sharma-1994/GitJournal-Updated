@@ -5,9 +5,8 @@
 
 name: Android
 
+# MANUAL ONLY — does not run on push/PR (saves Actions minutes)
 on:
-  pull_request:
-    branches: [master]
   workflow_dispatch:
 
 concurrency:
@@ -57,36 +56,17 @@ jobs:
       - name: Get Flutter Deps
         run: flutter pub get --suppress-analytics
 
-      - name: Analyze
-        run: flutter analyze || true
-
-      - name: Test
-        run: flutter test || true
-
-      - name: Build Debug APK (no signing required)
+      - name: Build Debug APK
         run: |
           BUILD_NUM=$(git rev-list --count HEAD)
           flutter build apk --debug --flavor prod --build-number="$BUILD_NUM" --dart-define=INSTALL_SOURCE=github
           cp build/app/outputs/flutter-apk/app-prod-debug.apk GitJournal-debug.apk
-          ls -la *.apk || true
-
-      - name: Build Release APK (if secrets available)
-        continue-on-error: true
-        run: |
-          if [ -f android/secrets/key.properties ] || [ -f secrets/key.properties ]; then
-            BUILD_NUM=$(git rev-list --count HEAD)
-            flutter build apk --flavor prod --build-number="$BUILD_NUM" --dart-define=INSTALL_SOURCE=fdroid
-            cp build/app/outputs/flutter-apk/app-prod-release.apk GitJournal-release.apk
-          else
-            echo "No signing secrets, skipping release build"
-          fi
+          ls -la GitJournal-debug.apk
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: GitJournal-APK
-          path: |
-            *.apk
-            build/app/outputs/flutter-apk/*.apk
-          if-no-files-found: warn
+          path: GitJournal-debug.apk
+          if-no-files-found: error
           retention-days: 30
