@@ -5,6 +5,7 @@
 
 name: Lint
 
+# Manual only
 on:
   workflow_dispatch:
 
