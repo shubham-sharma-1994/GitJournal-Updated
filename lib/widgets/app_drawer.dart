@@ -10,7 +10,6 @@ import 'package:git_setup/screens.dart';
 import 'package:gitjournal/account/login_screen.dart';
 import 'package:gitjournal/analytics/analytics.dart';
 import 'package:gitjournal/folder_listing/view/folder_listing.dart';
-import 'package:gitjournal/iap/purchase_screen.dart';
 import 'package:gitjournal/l10n.dart';
 import 'package:gitjournal/logger/logger.dart';
 import 'package:gitjournal/repository_manager.dart';
@@ -21,7 +20,6 @@ import 'package:gitjournal/settings/app_config.dart';
 import 'package:gitjournal/settings/bug_report.dart';
 import 'package:gitjournal/settings/settings_screen.dart';
 import 'package:gitjournal/widgets/app_drawer_header.dart';
-import 'package:gitjournal/widgets/pro_overlay.dart';
 import 'package:launch_app_store/launch_app_store.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -73,17 +71,15 @@ class _AppDrawerState extends State<AppDrawer>
       children: <Widget>[
         const SizedBox(height: 8),
         for (var id in repoIds) RepoTile(id),
-        ProOverlay(
-          child: _buildDrawerTile(
-            context,
-            icon: Icons.add,
-            title: context.loc.drawerAddRepo,
-            onTap: () {
-              repoManager.addRepoAndSwitch();
-              Navigator.pop(context);
-            },
-            selected: false,
-          ),
+        _buildDrawerTile(
+          context,
+          icon: Icons.add,
+          title: context.loc.drawerAddRepo,
+          onTap: () {
+            repoManager.addRepoAndSwitch();
+            Navigator.pop(context);
+          },
+          selected: false,
         ),
         divider,
       ],
@@ -146,21 +142,6 @@ class _AppDrawerState extends State<AppDrawer>
           // If they are multiple show the current one which a tick mark
           _buildRepoList(),
           if (setupGitButton != null) ...[setupGitButton, divider],
-          if (!appConfig.proMode)
-            _buildDrawerTile(
-              context,
-              icon: Icons.power,
-              title: context.loc.drawerPro,
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(context, PurchaseScreen.routePath);
-
-                logEvent(
-                  Event.PurchaseScreenOpen,
-                  parameters: {"from": "drawer"},
-                );
-              },
-            ),
           if (appConfig.experimentalAccounts)
             _buildDrawerTile(
               context,
@@ -169,7 +150,6 @@ class _AppDrawerState extends State<AppDrawer>
               onTap: () => _navTopLevel(context, LoginPage.routePath),
               selected: currentRoute == LoginPage.routePath,
             ),
-          if (!appConfig.proMode) divider,
           if (repo != null)
             _buildDrawerTile(
               context,
@@ -259,7 +239,7 @@ class _AppDrawerState extends State<AppDrawer>
 
   Widget _buildDrawerTile(
     BuildContext context, {
-    required IconData icon,
+    required Object icon, // IconData or FaIconData
     required String title,
     required void Function() onTap,
     bool isFontAwesome = false,
@@ -271,9 +251,12 @@ class _AppDrawerState extends State<AppDrawer>
       color: selected ? theme.colorScheme.secondary : listTileTheme.textColor,
     );
 
-    var iconW = !isFontAwesome
-        ? Icon(icon, color: textStyle.color)
-        : FaIcon(icon, color: textStyle.color);
+    final Widget iconW;
+    if (isFontAwesome) {
+      iconW = FaIcon(icon as FaIconData, color: textStyle.color);
+    } else {
+      iconW = Icon(icon as IconData, color: textStyle.color);
+    }
 
     var tile = ListTile(
       leading: iconW,
@@ -329,6 +312,28 @@ class RepoTile extends StatelessWidget {
           HomeScreen.routePath,
           (r) => true,
         );
+      },
+      onLongPress: () async {
+        var name = repoManager.repoFolderName(id);
+        var ok = await showDialog<bool>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text(context.loc.settingsDeleteRepo),
+            content: Text('Delete "$name"? This cannot be undone.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: Text(context.loc.settingsCancel),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: Text(context.loc.settingsDeleteRepo),
+              ),
+            ],
+          ),
+        );
+        if (ok != true) return;
+        await repoManager.deleteRepo(id);
       },
     );
 

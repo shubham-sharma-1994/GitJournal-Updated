@@ -23,9 +23,9 @@ class AppConfig extends ChangeNotifier {
 
   int version = 0;
 
-  bool proMode = false;
+  bool proMode = true;
 
-  var validateProMode = true;
+  var validateProMode = false;
 
   var debugLogLevel = 'v';
 
@@ -54,6 +54,10 @@ class AppConfig extends ChangeNotifier {
     experimentalTagAutoCompletion =
         pref.getBool("experimentalTagAutoCompletion") ??
             experimentalTagAutoCompletion;
+
+    // Always unlock Pro (purchase flow disabled / open-source unlock)
+    proMode = true;
+    validateProMode = false;
   }
 
   Future<void> save() async {

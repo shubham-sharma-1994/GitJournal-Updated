@@ -97,7 +97,7 @@ class FlattenedNotesFolder with NotesFolderNotifier implements NotesFolder {
     if (!_notes.containsKey(note.filePath)) {
       assert(
           false, '_noteModified called on a note NOT added ${note.filePath}');
-      _noteAdded(_, note);
+      _noteAdded(-1, note);
       return;
     }
 
