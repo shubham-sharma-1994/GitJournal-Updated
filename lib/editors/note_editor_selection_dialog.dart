@@ -69,7 +69,7 @@ class NoteEditorSelectionDialog extends StatelessWidget {
     BuildContext context,
     EditorType et,
     String text,
-    IconData iconData,
+    Object iconData,
   ) {
     var selected = et == currentEditor;
     var theme = Theme.of(context);
@@ -78,9 +78,17 @@ class NoteEditorSelectionDialog extends StatelessWidget {
       color: selected ? theme.primaryColor : listTileTheme.textColor,
     );
 
+    final data = iconData;
+    final Widget leadingIcon;
+    if (data is FaIconData) {
+      leadingIcon = FaIcon(data, color: textStyle.color);
+    } else {
+      leadingIcon = Icon(data as IconData, color: textStyle.color);
+    }
+
     return ListTile(
       title: Text(text),
-      leading: FaIcon(iconData, color: textStyle.color),
+      leading: leadingIcon,
       onTap: () => Navigator.of(context).pop(et),
       selected: selected,
     );
