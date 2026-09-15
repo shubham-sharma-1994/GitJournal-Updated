@@ -70,6 +70,17 @@ class GitHostSetupAutoConfigurePageState
           return;
         }
 
+        try {
+          var cfg = widget.providers.readGitConfig(context);
+          if (gitHost!.accessToken.isNotEmpty) {
+            cfg.httpsToken = gitHost!.accessToken;
+            await cfg.save();
+            Log.d("Saved HTTPS git token from OAuth");
+          }
+        } catch (e) {
+          Log.e("Failed to persist HTTPS token", ex: e);
+        }
+
         UserInfo? userInfo;
         try {
           setState(() {
