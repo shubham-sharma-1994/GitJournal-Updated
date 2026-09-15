@@ -14,6 +14,7 @@ import 'package:gitjournal/l10n.dart';
 import 'package:gitjournal/logger/logger.dart';
 import 'package:gitjournal/repository_manager.dart';
 import 'package:gitjournal/screens/error_screen.dart';
+import 'package:gitjournal/screens/git_terminal_screen.dart';
 import 'package:gitjournal/screens/home_screen.dart';
 import 'package:gitjournal/screens/tag_listing.dart';
 import 'package:gitjournal/settings/app_config.dart';
@@ -142,6 +143,13 @@ class _AppDrawerState extends State<AppDrawer>
           // If they are multiple show the current one which a tick mark
           _buildRepoList(),
           if (setupGitButton != null) ...[setupGitButton, divider],
+          _buildDrawerTile(
+            context,
+            icon: Icons.terminal,
+            title: 'Git Terminal',
+            onTap: () => _navTopLevel(context, GitTerminalScreen.routePath),
+            selected: currentRoute == GitTerminalScreen.routePath,
+          ),
           if (appConfig.experimentalAccounts)
             _buildDrawerTile(
               context,
