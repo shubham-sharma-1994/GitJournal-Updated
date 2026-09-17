@@ -28,6 +28,9 @@ class GitLab implements GitHost {
   var _stateOAuth = "";
 
   @override
+  String get accessToken => _accessCode ?? "";
+
+  @override
   void init(OAuthCallback callback) {
     Future _handleMessages(MethodCall call) async {
       if (call.method != "onURL") {
