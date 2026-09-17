@@ -17,6 +17,9 @@ class GitHubFake implements GitHost {
   GitHubFake(this.data);
 
   @override
+  String get accessToken => "";
+
+  @override
   void init(OAuthCallback oAuthCallback) {}
   @override
   Future<void> launchOAuthScreen() async {}
