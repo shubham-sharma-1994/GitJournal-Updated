@@ -5,6 +5,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:gitjournal/design/tokens/spacing_tokens.dart';
 import 'package:gitjournal/core/folder/notes_folder.dart';
 import 'package:gitjournal/core/folder/sorting_mode.dart';
 import 'package:gitjournal/core/note.dart';
@@ -193,7 +194,7 @@ class StandardNoteListTile extends StatelessWidget {
     ListTile tile;
     if (showSummary) {
       var summary = <Widget>[
-        const SizedBox(height: 8.0),
+        const SizedBox(height: spacingSm),
         HighlightedText(
           text: '$noteSummary\n', // no minLines option
           maxLines: 3,
@@ -244,7 +245,7 @@ class StandardNoteListTile extends StatelessWidget {
         children: <Widget>[
           divider,
           Padding(
-            padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
+            padding: const EdgeInsets.only(top: spacingMd, bottom: spacingMd),
             child: tile,
           ),
           divider,
@@ -256,7 +257,7 @@ class StandardNoteListTile extends StatelessWidget {
         children: <Widget>[
           divider,
           Padding(
-            padding: const EdgeInsets.only(top: 14.0, bottom: 14.0),
+            padding: const EdgeInsets.symmetric(vertical: spacingMd - 2),
             child: tile,
           ),
           divider,

@@ -23,7 +23,11 @@ public class UriReceiverActivity extends Activity {
         Map<String, Object> map = new HashMap<>();
         map.put("URL", data.toString());
 
-        MainActivity.channel.invokeMethod("onURL", map);
+        if (MainActivity.channel != null) {
+            MainActivity.channel.invokeMethod("onURL", map);
+        } else {
+            Log.e("UriReceiver", "Flutter channel is null; OAuth callback dropped");
+        }
 
         // Now that all data has been sent back to Dart-land, we should re-open the Flutter
         // activity. Due to the manifest-setting of the MainActivity ("singleTop), only a single

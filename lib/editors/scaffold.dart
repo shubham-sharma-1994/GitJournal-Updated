@@ -1,3 +1,4 @@
+import 'package:gitjournal/design/tokens/motion_tokens.dart';
 /*
  * SPDX-FileCopyrightText: 2019-2021 Vishesh Handa <me@vhanda.in>
  *
@@ -5,6 +6,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:gitjournal/design/tokens/spacing_tokens.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:function_types/function_types.dart';
 import 'package:gitjournal/core/folder/notes_folder_fs.dart';
@@ -252,7 +254,7 @@ class _HideWidget extends StatelessWidget {
     return IgnorePointer(
       ignoring: !visible,
       child: AnimatedOpacity(
-        duration: 500.milliseconds,
+        duration: durationLong2,
         opacity: opacity,
         child: child,
       ),

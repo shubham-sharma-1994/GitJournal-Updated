@@ -14,6 +14,7 @@ abstract class IGitConfig {
   String get sshPublicKey;
   String get sshPrivateKey;
   String get sshPassword;
+  String get httpsToken;
   SshKeyType get sshKeyType;
 
   set gitAuthor(String x);
@@ -21,6 +22,7 @@ abstract class IGitConfig {
   set sshPublicKey(String x);
   set sshPrivateKey(String x);
   set sshPassword(String x);
+  set httpsToken(String x);
   set sshKeyType(SshKeyType x);
 
   Future<void> save();

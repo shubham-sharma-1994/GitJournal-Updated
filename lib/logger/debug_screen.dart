@@ -1,3 +1,4 @@
+import 'package:gitjournal/design/tokens/motion_tokens.dart';
 /*
  * SPDX-FileCopyrightText: 2019-2021 Vishesh Handa <me@vhanda.in>
  *
@@ -40,16 +41,16 @@ class _DebugScreenState extends State<DebugScreen> {
   void _scrollToTop() {
     _controller.animateTo(
       _controller.position.minScrollExtent,
-      duration: 10.milliseconds,
-      curve: Curves.easeOut,
+      duration: durationShort1,
+      curve: curveDecelerated,
     );
   }
 
   void _scrollToBottom() {
     _controller.animateTo(
       _controller.position.maxScrollExtent,
-      duration: 10.milliseconds,
-      curve: Curves.easeOut,
+      duration: durationShort1,
+      curve: curveDecelerated,
     );
   }
 

@@ -5,8 +5,8 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:gitjournal/design/tokens/spacing_tokens.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:function_types/function_types.dart';
 import 'package:gitjournal/core/folder/notes_folder_fs.dart';
 import 'package:gitjournal/editors/common.dart';
@@ -238,7 +238,7 @@ class BottomMenuSheet extends StatelessWidget {
         if (metaDataEditable)
           ProOverlay(
             child: ListTile(
-              leading: const FaIcon(FontAwesomeIcons.tag),
+              leading: Icon(Icons.label),
               title: Text(context.loc.editorsCommonTags),
               onTap: () {
                 var note = editorState.getNote();
@@ -261,7 +261,7 @@ class BottomMenuSheet extends StatelessWidget {
         ),
         ProOverlay(
           child: ListTile(
-            leading: const FaIcon(FontAwesomeIcons.peace),
+            leading: Icon(Icons.spa),
             title: Text(zenModeEnabled
                 ? context.loc.editorsCommonZenDisable
                 : context.loc.editorsCommonZenEnable),

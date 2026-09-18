@@ -5,6 +5,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:gitjournal/design/tokens/spacing_tokens.dart';
 import 'package:function_types/function_types.dart';
 import 'package:gitjournal/folder_listing/model/folder_listing_model.dart';
 import 'package:gitjournal/l10n.dart';
@@ -109,7 +110,9 @@ class FolderTileState extends State<FolderTile> {
 
     var selected = widget.selectedPath == widget.folder.path;
     return Card(
-      color: selected ? theme.highlightColor : theme.cardColor,
+      color: selected
+          ? theme.colorScheme.secondaryContainer
+          : theme.colorScheme.surfaceContainerLow,
       child: ListTile(
         leading: Container(
           width: 48,
@@ -150,7 +153,7 @@ class FolderTileState extends State<FolderTile> {
     }
 
     return Container(
-      margin: const EdgeInsets.only(left: 16.0),
+      margin: const EdgeInsets.only(left: spacingMd),
       child: Column(
         mainAxisAlignment: mainAxisAlignment,
         crossAxisAlignment: crossAxisAlignment,

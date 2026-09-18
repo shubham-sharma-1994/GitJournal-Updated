@@ -27,6 +27,9 @@ class GitHub implements GitHost {
   var _accessCode = "";
 
   @override
+  String get accessToken => _accessCode;
+
+  @override
   void init(OAuthCallback callback) {
     Future _handleMessages(MethodCall call) async {
       if (call.method != "onURL") {
@@ -59,10 +62,20 @@ class GitHub implements GitHost {
   }
 
   Future<String> _getAccessCode(String authCode) async {
-    var url = Uri.parse(
-        "https://github.com/login/oauth/access_token?client_id=$_clientID&client_secret=$_clientSecret&code=$authCode");
-
-    var response = await http.post(url);
+    var url = Uri.parse("https://github.com/login/oauth/access_token");
+    var response = await http.post(
+      url,
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: {
+        "client_id": _clientID,
+        "client_secret": _clientSecret,
+        "code": authCode,
+        "redirect_uri": "gitjournal://login.oauth2",
+      },
+    );
     if (response.statusCode != 200) {
       Log.d("Github getAccessCode: Invalid response " +
           response.statusCode.toString() +
@@ -72,7 +85,14 @@ class GitHub implements GitHost {
     }
     // Log.d("GithubResponse: " + response.body);
 
-    var map = Uri.splitQueryString(response.body);
+    var body = response.body;
+    if (body.trim().startsWith("{")) {
+      var decoded = jsonDecode(body);
+      if (decoded is Map && decoded["access_token"] is String) {
+        return decoded["access_token"] as String;
+      }
+    }
+    var map = Uri.splitQueryString(body);
     return map["access_token"] ?? "";
   }
 
@@ -82,7 +102,8 @@ class GitHub implements GitHost {
 
     var url = "https://github.com/login/oauth/authorize?client_id=" +
         _clientID +
-        "&scope=repo";
+        "&scope=repo&redirect_uri=" +
+        Uri.encodeComponent("gitjournal://login.oauth2");
     await launchUrl(
       Uri.parse(url),
       mode: LaunchMode.externalApplication,

@@ -5,7 +5,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gitjournal/l10n.dart';
 import 'package:gitjournal/settings/settings.dart';
 import 'package:gitjournal/settings/settings_bottom_menu_bar.dart';
@@ -48,7 +47,7 @@ class SettingsUIScreen extends StatelessWidget {
         if (feature_themes)
           SettingsTile(
             title: context.loc.settingsThemeLight,
-            iconData: FontAwesomeIcons.sun,
+            iconData: Icons.light_mode,
             onTap: () {
               var route = MaterialPageRoute(
                 builder: (context) =>
@@ -62,7 +61,7 @@ class SettingsUIScreen extends StatelessWidget {
         if (feature_themes)
           SettingsTile(
             title: context.loc.settingsThemeDark,
-            iconData: FontAwesomeIcons.solidMoon,
+            iconData: Icons.dark_mode,
             onTap: () {
               var route = MaterialPageRoute(
                 builder: (context) =>

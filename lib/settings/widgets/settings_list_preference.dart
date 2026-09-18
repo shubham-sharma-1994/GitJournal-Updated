@@ -5,6 +5,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:gitjournal/design/tokens/spacing_tokens.dart';
 import 'package:function_types/function_types.dart';
 import 'package:gitjournal/l10n.dart';
 
@@ -64,7 +65,7 @@ class ListPreferenceSelectionDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(title),
-      titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+      titlePadding: const EdgeInsets.fromLTRB(spacingLg, spacingLg, spacingLg, spacingMd),
       content: SizedBox(
         width: double.maxFinite,
         child: ScrollConfiguration(
@@ -94,7 +95,7 @@ class ListPreferenceSelectionDialog extends StatelessWidget {
           },
         )
       ],
-      actionsPadding: const EdgeInsets.fromLTRB(0, 0, 8, 8),
+      actionsPadding: const EdgeInsets.fromLTRB(0, 0, spacingSm, spacingSm),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(8.0)),
       ),
@@ -122,7 +123,7 @@ class _LabeledRadio extends StatelessWidget {
         if (value != groupValue) onChanged(value);
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        padding: const EdgeInsets.symmetric(horizontal: spacingSm),
         child: Row(
           children: <Widget>[
             Radio<String?>(
