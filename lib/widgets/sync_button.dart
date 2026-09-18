@@ -1,3 +1,4 @@
+import 'package:gitjournal/design/tokens/motion_tokens.dart';
 /*
  * SPDX-FileCopyrightText: 2019-2021 Vishesh Handa <me@vhanda.in>
  *
@@ -146,7 +147,7 @@ class _BlinkingIconState extends State<BlinkingIcon>
     );
     _animation = CurvedAnimation(
       parent: _controller,
-      curve: Curves.linear,
+      curve: curveLinear,
     );
 
     _controller.repeat(reverse: true);
