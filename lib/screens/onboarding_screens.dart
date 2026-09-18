@@ -94,7 +94,8 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
                   dotsCount: pages.length,
                   position: _currentPageIndex.toDouble(),
                   decorator: DotsDecorator(
-                    activeColor: Theme.of(context).colorScheme.primary).primaryColorDark,
+                    activeColor: Theme.of(context).colorScheme.primary,
+                    color: Theme.of(context).colorScheme.outlineVariant,
                   ),
                 ),
               ],
