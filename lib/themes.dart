@@ -1,11 +1,13 @@
 /*
  * SPDX-FileCopyrightText: 2019-2021 Vishesh Handa <me@vhanda.in>
+ * SPDX-FileCopyrightText: 2026 Shubham Sharma
  *
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gitjournal/design/tokens/color_tokens.dart';
 
 import 'settings/settings.dart';
 
@@ -14,18 +16,18 @@ class Themes {
     colorScheme: ColorScheme.fromSwatch(
       primarySwatch: Colors.green,
     ).copyWith(
-      primary: const Color(0xFF66bb6a),
-      secondary: const Color(0xff6d4c41),
-      onPrimary: Colors.black,
+      primary: gjGreenPrimary,
+      secondary: gjBrownSecondary,
+      onPrimary: gjOnPrimaryLight,
     ),
     brightness: Brightness.light,
-    primaryColor: const Color(0xFF66bb6a),
-    primaryColorLight: const Color(0xFF98ee99),
-    primaryColorDark: const Color(0xFF338a3e),
+    primaryColor: gjGreenPrimary,
+    primaryColorLight: gjGreenPrimaryLight,
+    primaryColorDark: gjGreenPrimaryDark,
     textSelectionTheme: TextSelectionThemeData(
-      cursorColor: const Color(0xFF338a3e),
-      selectionHandleColor: const Color(0xFF66bb6a),
-      selectionColor: Colors.grey[400],
+      cursorColor: gjGreenPrimaryDark,
+      selectionHandleColor: gjGreenPrimary,
+      selectionColor: gjSelectionLight,
     ),
     pageTransitionsTheme: const PageTransitionsTheme(builders: {
       TargetPlatform.android: ZoomPageTransitionsBuilder(),
@@ -42,15 +44,15 @@ class Themes {
       primarySwatch: Colors.grey,
       brightness: Brightness.dark,
     ).copyWith(
-      primary: const Color(0xff212121),
-      secondary: const Color(0xff689f38),
+      primary: gjDarkSurface,
+      secondary: gjLimeAccent,
     ),
     brightness: Brightness.dark,
-    primaryColor: const Color(0xff212121),
+    primaryColor: gjDarkSurface,
     textSelectionTheme: const TextSelectionThemeData(
-      cursorColor: Color(0xFF66bb6a),
-      selectionHandleColor: Color(0xFF66bb6a),
-      selectionColor: Color(0xff689f38),
+      cursorColor: gjGreenPrimary,
+      selectionHandleColor: gjGreenPrimary,
+      selectionColor: gjLimeAccent,
     ),
     pageTransitionsTheme: const PageTransitionsTheme(builders: {
       TargetPlatform.android: ZoomPageTransitionsBuilder(),
@@ -66,7 +68,7 @@ class Themes {
           return null;
         }
         if (states.contains(WidgetState.selected)) {
-          return const Color(0xFF66bb6a);
+          return gjGreenPrimary;
         }
         return null;
       }),
@@ -78,7 +80,7 @@ class Themes {
           return null;
         }
         if (states.contains(WidgetState.selected)) {
-          return const Color(0xFF66bb6a);
+          return gjGreenPrimary;
         }
         return null;
       }),
@@ -90,7 +92,7 @@ class Themes {
           return null;
         }
         if (states.contains(WidgetState.selected)) {
-          return const Color(0xFF66bb6a);
+          return gjGreenPrimary;
         }
         return null;
       }),
@@ -100,7 +102,7 @@ class Themes {
           return null;
         }
         if (states.contains(WidgetState.selected)) {
-          return const Color(0xFF66bb6a);
+          return gjGreenPrimary;
         }
         return null;
       }),
@@ -119,4 +121,3 @@ class Themes {
     }
   }
 }
-
