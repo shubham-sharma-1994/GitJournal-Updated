@@ -114,11 +114,7 @@ dev_dependencies:
   hive_generator_plus: ^5.0.0
   process_run: ^0.12.3+2
   test:
-  widgetbook:
-    git:
-      url: https://github.com/devfelipereis/widgetbook
-      ref: upgrade-flutter-3.10
-      path: packages/widgetbook
+  widgetbook: ^3.25.0
 
 flutter:
   uses-material-design: true
