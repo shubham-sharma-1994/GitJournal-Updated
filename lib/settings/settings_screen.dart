@@ -5,6 +5,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:gitjournal/design/tokens/spacing_tokens.dart';
 import 'package:git_setup/screens.dart';
 import 'package:gitjournal/analytics/analytics.dart';
 import 'package:gitjournal/screens/git_terminal_screen.dart';
@@ -31,7 +32,7 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var list = ListView(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      padding: const EdgeInsets.symmetric(vertical: spacingMd),
       children: [
         SettingsTile(
           iconData: Icons.brush,
@@ -232,7 +233,7 @@ class _SettingsSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(spacingSm),
       child: Material(
         elevation: 1.0,
         borderRadius: BorderRadius.circular(25.0),
@@ -244,7 +245,7 @@ class _SettingsSearchBar extends StatelessWidget {
             ),
             filled: true,
             hintText: "Search",
-            fillColor: Colors.white70,
+            fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
             prefixIcon: const Icon(Icons.search),
             // This content padding has no effect if 'prefixIcon' is set!!
             contentPadding: const EdgeInsets.fromLTRB(205.0, 15.0, 20.0, 15.0),
