@@ -7,6 +7,9 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:gitjournal/widgets/repo_switcher_button.dart';
+import 'package:gitjournal/widgets/main_app_bar_actions.dart';
+import 'package:gitjournal/widgets/main_nav_bar.dart';
 import 'package:gitjournal/core/folder/flattened_filtered_notes_folder.dart';
 import 'package:gitjournal/core/folder/notes_folder_fs.dart';
 import 'package:gitjournal/core/markdown/md_yaml_note_serializer.dart';
@@ -14,8 +17,6 @@ import 'package:gitjournal/core/note.dart';
 import 'package:gitjournal/core/views/inline_tags_view.dart';
 import 'package:gitjournal/folder_views/folder_view.dart';
 import 'package:gitjournal/l10n.dart';
-import 'package:gitjournal/widgets/app_bar_menu_button.dart';
-import 'package:gitjournal/widgets/app_drawer.dart';
 import 'package:gitjournal/widgets/future_builder_with_progress.dart';
 import 'package:gitjournal/widgets/pro_overlay.dart';
 import 'package:provider/provider.dart';
@@ -60,13 +61,13 @@ class TagListingScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.loc.screensTagsTitle),
-        leading: GJAppBarMenuButton(),
+        title: const RepoSwitcherButton(),
+        actions: mainAppBarActions(context),
       ),
       body: Scrollbar(
         child: ProOverlay(child: body),
       ),
-      drawer: AppDrawer(),
+      bottomNavigationBar: const MainNavBar(),
     );
   }
 

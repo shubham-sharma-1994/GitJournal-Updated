@@ -14,7 +14,7 @@ import 'package:gitjournal/repository_manager.dart';
 import 'package:gitjournal/screens/home_screen.dart';
 import 'package:gitjournal/settings/app_config.dart';
 import 'package:gitjournal/settings/settings_screen.dart';
-import 'package:gitjournal/widgets/app_drawer.dart';
+import 'package:gitjournal/widgets/main_nav_bar.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -100,18 +100,20 @@ void main() {
     });
   });
 
-  group('AppDrawer goldens', () {
-    testGoldens('drawer variants', (tester) async {
+  group('MainNavBar goldens', () {
+    testGoldens('nav bar variants', (tester) async {
       await tester.runAsync(setupFixture);
       for (final v in goldenVariants) {
-        // Capture drawer as a full-screen surface (not Scaffold.drawer)
-        // to avoid open-drawer timing and keep the baseline stable.
         await pumpGolden(
           tester,
-          child: AppDrawer(),
+          child: Scaffold(
+            appBar: AppBar(title: const Text('Nav')),
+            body: const Center(child: Text('body')),
+            bottomNavigationBar: const MainNavBar(),
+          ),
           themeName: v.theme,
           locale: v.locale,
-          goldenName: 'drawer_${v.name}',
+          goldenName: 'navbar_${v.name}',
         );
       }
     });

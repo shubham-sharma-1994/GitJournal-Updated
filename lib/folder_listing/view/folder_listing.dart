@@ -5,6 +5,9 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:gitjournal/widgets/repo_switcher_button.dart';
+import 'package:gitjournal/widgets/main_app_bar_actions.dart';
+import 'package:gitjournal/widgets/main_nav_bar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gitjournal/core/folder/flattened_notes_folder.dart';
 import 'package:gitjournal/core/folder/notes_folder_fs.dart';
@@ -17,8 +20,6 @@ import 'package:gitjournal/l10n.dart';
 import 'package:gitjournal/repository.dart';
 import 'package:gitjournal/settings/app_config.dart';
 import 'package:gitjournal/utils/utils.dart';
-import 'package:gitjournal/widgets/app_bar_menu_button.dart';
-import 'package:gitjournal/widgets/app_drawer.dart';
 import 'package:gitjournal/widgets/note_delete_dialog.dart';
 import 'package:gitjournal/widgets/rename_dialog.dart';
 
@@ -138,21 +139,22 @@ class FolderListingScreen extends StatelessWidget {
     );
 
     var title = state.selectedFolderPath == null
-        ? Text(context.loc.screensFoldersTitle)
+        ? const RepoSwitcherButton()
         : Text(context.loc.screensFoldersSelected);
 
     return Scaffold(
       appBar: AppBar(
         title: title,
         leading: state.selectedFolderPath == null
-            ? GJAppBarMenuButton()
+            ? null
             : backButton,
         actions: <Widget>[
           if (action != null) action,
+          if (state.selectedFolderPath == null) ...mainAppBarActions(context),
         ],
       ),
       body: Scrollbar(child: treeView),
-      drawer: AppDrawer(),
+      bottomNavigationBar: const MainNavBar(),
       floatingActionButton: CreateFolderButton(),
     );
   }
@@ -177,10 +179,10 @@ class FolderListingScreen extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: Text(context.loc.screensFoldersTitle),
-            leading: GJAppBarMenuButton(),
+            actions: mainAppBarActions(context),
           ),
           body: child,
-          drawer: AppDrawer(),
+          bottomNavigationBar: const MainNavBar(),
           floatingActionButton: CreateFolderButton(),
         );
       },

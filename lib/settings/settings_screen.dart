@@ -5,6 +5,12 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:git_setup/screens.dart';
+import 'package:gitjournal/analytics/analytics.dart';
+import 'package:gitjournal/screens/git_terminal_screen.dart';
+import 'package:launch_app_store/launch_app_store.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:universal_io/io.dart' show Platform;
 import 'package:function_types/function_types.dart';
 import 'package:gitjournal/l10n.dart';
 import 'package:gitjournal/logger/debug_screen.dart';
@@ -133,15 +139,58 @@ class SettingsScreen extends StatelessWidget {
             );
           },
         ),
+
+        SettingsHeader(context.loc.settingsListProjectTitle),
+        SettingsTile(
+          iconData: Icons.cloud_upload,
+          title: context.loc.drawerSetup,
+          subtitle: '',
+          onTap: () {
+            Navigator.of(context).pushNamed(GitHostSetupScreen.routePath);
+          },
+        ),
+        SettingsTile(
+          iconData: Icons.share,
+          title: context.loc.drawerShare,
+          onTap: () {
+            Share.share('Checkout GitJournal https://gitjournal.io/');
+            logEvent(Event.DrawerShare);
+          },
+        ),
+        if (Platform.isAndroid || Platform.isIOS)
+          SettingsTile(
+            iconData: Icons.feedback,
+            title: context.loc.drawerRate,
+            onTap: () {
+              LaunchReview.launch(
+                androidAppId: "io.gitjournal.gitjournal",
+                iOSAppId: "1466519634",
+              );
+              logEvent(Event.DrawerRate);
+            },
+          ),
+        SettingsTile(
+          iconData: Icons.rate_review,
+          title: context.loc.drawerFeedback,
+          onTap: () async {
+            await createBugReport(context);
+            logEvent(Event.DrawerFeedback);
+          },
+        ),
         SettingsTile(
           iconData: Icons.bug_report,
           title: context.loc.drawerBug,
-          onTap: () => createBugReport(context),
+          onTap: () async {
+            await createBugReport(context);
+            logEvent(Event.DrawerBugReport);
+          },
         ),
         SettingsTile(
-          iconData: Icons.message,
-          title: context.loc.drawerFeedback,
-          onTap: () => createFeedback(context),
+          iconData: Icons.terminal,
+          title: 'Git Terminal',
+          onTap: () {
+            Navigator.of(context).pushNamed(GitTerminalScreen.routePath);
+          },
         ),
         SettingsTile(
           iconData: Icons.favorite,
