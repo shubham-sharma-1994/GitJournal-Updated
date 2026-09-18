@@ -110,8 +110,9 @@ class FolderTileState extends State<FolderTile> {
 
     var selected = widget.selectedPath == widget.folder.path;
     return Card(
-      color: Theme.of(context).colorScheme.surfaceContainerLow,
-      color: selected ? theme.highlightColor : theme.cardColor,
+      color: selected
+          ? theme.colorScheme.secondaryContainer
+          : theme.colorScheme.surfaceContainerLow,
       child: ListTile(
         leading: Container(
           width: 48,
