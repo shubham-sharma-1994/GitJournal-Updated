@@ -283,30 +283,6 @@ class JournalAppState extends State<JournalApp> {
     var initialRoute =
         router != null ? router.initialRoute() : ErrorScreen.routePath;
 
-    /*
-
-    Also use -
-    * https://github.com/bernaferrari/RandomColorScheme
-    * https://pub.dev/packages/color_blindness
-
-    const FlexSchemeData customFlexScheme = FlexSchemeData(
-      name: 'Toledo purple',
-      description: 'Purple theme created from custom defined colors.',
-      light: FlexSchemeColor(
-        primary: Color(0xFF66bb6a),
-        primaryVariant: Color(0xFF338a3e),
-        secondary: Color(0xff6d4c41),
-        secondaryVariant: Color(0xFF338a3e),
-      ),
-      dark: FlexSchemeColor(
-        primary: Color(0xff212121),
-        primaryVariant: Color(0xffc8635f),
-        secondary: Color(0xff689f38),
-        secondaryVariant: Color(0xff00be00),
-      ),
-    );
-    */
-
     var locale = Locale(settings.locale);
     var lSplit = settings.locale.split("_");
     if (lSplit.length > 1) {
