@@ -140,7 +140,7 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
 
-        SettingsHeader(context.loc.settingsListProjectTitle),
+        SettingsHeader('Advanced'),
         SettingsTile(
           iconData: Icons.cloud_upload,
           title: context.loc.drawerSetup,
