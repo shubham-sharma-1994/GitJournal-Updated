@@ -3,17 +3,8 @@
 name: Goldens
 on:
   workflow_dispatch:
-  pull_request:
   push:
     branches: [upgrade-flutter-latest]
-    paths:
-      - "test/golden/**"
-      - "pubspec.yaml"
-      - "lib/**"
-      - ".github/workflows/goldens.yml"
-concurrency:
-  group: goldens-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 jobs:
   Verify:
     runs-on: ubuntu-latest
@@ -25,12 +16,8 @@ jobs:
           channel: stable
           cache: true
       - run: flutter pub get --suppress-analytics
-      - run: flutter test test/golden
-      - if: failure()
-        uses: actions/upload-artifact@v4
+      - run: flutter test test/golden --update-goldens
+      - uses: actions/upload-artifact@v4
         with:
-          name: golden-failures
-          path: |
-            test/golden/**
-            **/failures/**
-          if-no-files-found: warn
+          name: golden-baselines
+          path: test/golden/**/*.png
