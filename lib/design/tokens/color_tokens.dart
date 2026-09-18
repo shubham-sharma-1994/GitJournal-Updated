@@ -6,21 +6,27 @@
 
 import 'package:flutter/material.dart';
 
-/// Brand and theme color tokens extracted from the legacy Material 2 themes.
-/// Values match the previous inline hex literals in `lib/themes.dart` exactly.
+/// Brand and theme color tokens.
+/// Seed colors drive Material 3 schemes (SHU-9); other tokens remain for legacy references.
 
-// Light primary green family
-const Color gjGreenPrimary = Color(0xFF66bb6a);
+/// Seed primary — legacy brand green.
+const Color gjSeedPrimary = Color(0xFF66bb6a);
+
+/// Seed secondary — legacy brand brown.
+const Color gjSeedSecondary = Color(0xFF6d4c41);
+
+// Light primary green family (legacy M2 names, still used where needed)
+const Color gjGreenPrimary = gjSeedPrimary;
 const Color gjGreenPrimaryLight = Color(0xFF98ee99);
 const Color gjGreenPrimaryDark = Color(0xFF338a3e);
 
 // Secondary / accent
-const Color gjBrownSecondary = Color(0xFF6d4c41);
+const Color gjBrownSecondary = gjSeedSecondary;
 const Color gjLimeAccent = Color(0xFF689f38);
 
 // Surfaces
 const Color gjDarkSurface = Color(0xFF212121);
 
 // On-colors / selection
-const Color gjOnPrimaryLight = Color(0xFF000000); // was Colors.black
-const Color gjSelectionLight = Color(0xFFBDBDBD); // was Colors.grey[400]
+const Color gjOnPrimaryLight = Color(0xFF000000);
+const Color gjSelectionLight = Color(0xFFBDBDBD);
