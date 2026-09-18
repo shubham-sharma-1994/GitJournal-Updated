@@ -177,8 +177,7 @@ class _AppDrawerState extends State<AppDrawer>
           if (repo != null)
             _buildDrawerTile(
               context,
-              icon: FontAwesomeIcons.tag,
-              isFontAwesome: true,
+              icon: Icons.label,
               title: context.loc.drawerTags,
               onTap: () => _navTopLevel(context, TagListingScreen.routePath),
               selected: currentRoute == TagListingScreen.routePath,
@@ -247,10 +246,9 @@ class _AppDrawerState extends State<AppDrawer>
 
   Widget _buildDrawerTile(
     BuildContext context, {
-    required Object icon, // IconData or FaIconData
+    required IconData icon,
     required String title,
     required void Function() onTap,
-    bool isFontAwesome = false,
     bool selected = false,
   }) {
     var theme = Theme.of(context);
@@ -259,12 +257,7 @@ class _AppDrawerState extends State<AppDrawer>
       color: selected ? theme.colorScheme.secondary : listTileTheme.textColor,
     );
 
-    final Widget iconW;
-    if (isFontAwesome) {
-      iconW = FaIcon(icon as FaIconData, color: textStyle.color);
-    } else {
-      iconW = Icon(icon as IconData, color: textStyle.color);
-    }
+    final iconW = Icon(icon, color: textStyle.color);
 
     var tile = ListTile(
       leading: iconW,
@@ -298,7 +291,7 @@ class RepoTile extends StatelessWidget {
       color: selected ? theme.colorScheme.secondary : listTileTheme.textColor,
     );
 
-    var icon = FaIcon(FontAwesomeIcons.book, color: textStyle.color);
+    var icon = Icon(Icons.menu_book, color: textStyle.color);
 
     var tile = ListTile(
       leading: icon,

@@ -5,7 +5,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:function_types/function_types.dart';
 import 'package:gitjournal/l10n.dart';
 import 'package:gitjournal/logger/debug_screen.dart';
@@ -29,7 +28,7 @@ class SettingsScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       children: [
         SettingsTile(
-          iconData: FontAwesomeIcons.paintbrush,
+          iconData: Icons.brush,
           title: context.loc.settingsListUserInterfaceTitle,
           subtitle: context.loc.settingsListUserInterfaceSubtitle,
           onTap: () {
@@ -43,7 +42,7 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
         SettingsTile(
-          iconData: FontAwesomeIcons.git,
+          iconData: Icons.merge,
           title: context.loc.settingsListGitTitle,
           subtitle: context.loc.settingsListGitSubtitle,
           onTap: () {
@@ -57,7 +56,7 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
         SettingsTile(
-          iconData: FontAwesomeIcons.penToSquare,
+          iconData: Icons.edit_note,
           title: context.loc.settingsListEditorTitle,
           subtitle: context.loc.settingsListEditorSubtitle,
           onTap: () {
@@ -71,7 +70,7 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
         SettingsTile(
-          iconData: FontAwesomeIcons.hardDrive,
+          iconData: Icons.storage,
           title: context.loc.settingsListStorageTitle,
           subtitle: context.loc.settingsListStorageSubtitle,
           onTap: () {
@@ -85,7 +84,7 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
         SettingsTile(
-          iconData: FontAwesomeIcons.chartArea,
+          iconData: Icons.area_chart,
           title: context.loc.settingsListAnalyticsTitle,
           subtitle: context.loc.settingsListAnalyticsSubtitle,
           onTap: () {
@@ -97,7 +96,7 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
         SettingsTile(
-          iconData: FontAwesomeIcons.wrench,
+          iconData: Icons.build,
           title: context.loc.settingsListDebugTitle,
           subtitle: context.loc.settingsListDebugSubtitle,
           onTap: () {
@@ -109,7 +108,7 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
         SettingsTile(
-          iconData: FontAwesomeIcons.flask,
+          iconData: Icons.science,
           title: context.loc.settingsListExperimentsTitle,
           subtitle: context.loc.settingsListExperimentsSubtitle,
           onTap: () {
@@ -135,17 +134,17 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
         SettingsTile(
-          iconData: FontAwesomeIcons.bug,
+          iconData: Icons.bug_report,
           title: context.loc.drawerBug,
           onTap: () => createBugReport(context),
         ),
         SettingsTile(
-          iconData: FontAwesomeIcons.message,
+          iconData: Icons.message,
           title: context.loc.drawerFeedback,
           onTap: () => createFeedback(context),
         ),
         SettingsTile(
-          iconData: FontAwesomeIcons.heart,
+          iconData: Icons.favorite,
           title: context.loc.settingsProjectContribute,
         ),
         SettingsTile(
@@ -208,7 +207,7 @@ class _SettingsSearchBar extends StatelessWidget {
 }
 
 class SettingsTile extends StatelessWidget {
-  final Object iconData; // IconData or FaIconData (font_awesome 11)
+  final IconData iconData;
   final String title;
   final String? subtitle;
   final Func0<void>? onTap;
@@ -230,20 +229,13 @@ class SettingsTile extends StatelessWidget {
       color: listTileTheme.textColor,
     );
 
-    // Local var required for type promotion (fields are not promoted)
-    final data = iconData;
-    final Widget icon;
-    if (data is FaIconData) {
-      icon = FaIcon(data, color: textStyle.color);
-    } else {
-      icon = Icon(data as IconData, color: textStyle.color);
-    }
+    final Widget icon = Icon(iconData, color: textStyle.color);
 
     return ListTile(
       leading: icon,
       title: Text(title, style: textStyle),
       subtitle: subtitle != null ? Text(subtitle!) : null,
-      onTap: onTap ?? onTap,
+      onTap: onTap,
     );
   }
 }

@@ -5,7 +5,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:function_types/function_types.dart';
 import 'package:gitjournal/editors/common_types.dart';
 
@@ -28,21 +27,21 @@ class NewNoteNavBar extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(4.0),
             child: IconButton(
-              icon: const FaIcon(FontAwesomeIcons.listCheck),
+              icon: Icon(Icons.checklist),
               onPressed: () => onPressed(EditorType.Checklist),
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(4.0),
             child: IconButton(
-              icon: const FaIcon(FontAwesomeIcons.markdown),
+              icon: Icon(Icons.article),
               onPressed: () => onPressed(EditorType.Markdown),
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(4.0),
             child: IconButton(
-              icon: const FaIcon(FontAwesomeIcons.book),
+              icon: Icon(Icons.menu_book),
               onPressed: () => onPressed(EditorType.Journal),
             ),
           ),

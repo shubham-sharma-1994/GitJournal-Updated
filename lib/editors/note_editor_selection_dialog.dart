@@ -26,35 +26,35 @@ class NoteEditorSelectionDialog extends StatelessWidget {
             context,
             EditorType.Markdown,
             context.loc.settingsEditorsMarkdownEditor,
-            FontAwesomeIcons.markdown,
+            Icons.article,
           ),
         if (editorSupported(fileFormat, EditorType.Raw))
           _buildTile(
             context,
             EditorType.Raw,
             context.loc.settingsEditorsRawEditor,
-            FontAwesomeIcons.dna,
+            Icons.biotech,
           ),
         if (editorSupported(fileFormat, EditorType.Checklist))
           _buildTile(
             context,
             EditorType.Checklist,
             context.loc.settingsEditorsChecklistEditor,
-            FontAwesomeIcons.listCheck,
+            Icons.checklist,
           ),
         if (editorSupported(fileFormat, EditorType.Journal))
           _buildTile(
             context,
             EditorType.Journal,
             context.loc.settingsEditorsJournalEditor,
-            FontAwesomeIcons.book,
+            Icons.menu_book,
           ),
         if (editorSupported(fileFormat, EditorType.Org))
           _buildTile(
             context,
             EditorType.Org,
             context.loc.settingsEditorsOrgEditor,
-            FontAwesomeIcons.horseHead,
+            Icons.pets,
           )
       ],
     );
@@ -69,7 +69,7 @@ class NoteEditorSelectionDialog extends StatelessWidget {
     BuildContext context,
     EditorType et,
     String text,
-    Object iconData,
+    IconData iconData,
   ) {
     var selected = et == currentEditor;
     var theme = Theme.of(context);
@@ -78,13 +78,7 @@ class NoteEditorSelectionDialog extends StatelessWidget {
       color: selected ? theme.primaryColor : listTileTheme.textColor,
     );
 
-    final data = iconData;
-    final Widget leadingIcon;
-    if (data is FaIconData) {
-      leadingIcon = FaIcon(data, color: textStyle.color);
-    } else {
-      leadingIcon = Icon(data as IconData, color: textStyle.color);
-    }
+    final Widget leadingIcon = Icon(iconData as IconData, color: textStyle.color);
 
     return ListTile(
       title: Text(text),

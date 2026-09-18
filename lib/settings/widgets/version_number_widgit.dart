@@ -6,7 +6,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gitjournal/l10n.dart';
 import 'package:gitjournal/utils/utils.dart';
 
@@ -39,8 +38,8 @@ class VersionNumberTileState extends State<VersionNumberTile> {
   Widget build(BuildContext context) {
     var textTheme = Theme.of(context).textTheme;
     return ListTile(
-      leading: FaIcon(
-        FontAwesomeIcons.stamp,
+      leading: Icon(
+        Icons.approval,
         color: textTheme.titleMedium!.color,
       ),
       title: Text(context.loc.settingsVersionInfo, style: textTheme.titleMedium),
