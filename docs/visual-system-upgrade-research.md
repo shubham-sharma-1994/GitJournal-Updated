@@ -1,3 +1,5 @@
+> **Status (2026):** Plan implemented on `upgrade-flutter-latest` — see Linear project **GitJournal Visual Upgrade** (SHU-5…SHU-18) and `docs/DESIGN.md`.
+
 # GitJournal Visual System Upgrade — R&D Report
 
 **Status:** Research only — no code changes made.

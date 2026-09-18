@@ -1,3 +1,4 @@
+import 'package:gitjournal/design/tokens/motion_tokens.dart';
 /*
  * SPDX-FileCopyrightText: 2020-2021 Roland Fredenhagen <important@van-fredenhagen.de>
  *
@@ -18,7 +19,7 @@ class HeroDialogRoute<T> extends PageRoute<T> {
   bool get barrierDismissible => true;
 
   @override
-  Duration get transitionDuration => const Duration(milliseconds: 200);
+  Duration get transitionDuration => durationShort4;
 
   @override
   bool get maintainState => true;
@@ -30,7 +31,7 @@ class HeroDialogRoute<T> extends PageRoute<T> {
   Widget buildTransitions(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation, Widget child) {
     return FadeTransition(
-        opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+        opacity: CurvedAnimation(parent: animation, curve: curveDecelerated),
         child: child);
   }
 

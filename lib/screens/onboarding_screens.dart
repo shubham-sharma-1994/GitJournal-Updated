@@ -1,3 +1,4 @@
+import 'package:gitjournal/design/tokens/motion_tokens.dart';
 /*
  * SPDX-FileCopyrightText: 2019-2021 Vishesh Handa <me@vhanda.in>
  *
@@ -7,6 +8,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:gitjournal/design/tokens/spacing_tokens.dart';
 import 'package:function_types/function_types.dart';
 import 'package:gitjournal/analytics/analytics.dart';
 import 'package:gitjournal/l10n.dart';
@@ -92,7 +94,7 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
                   dotsCount: pages.length,
                   position: _currentPageIndex.toDouble(),
                   decorator: DotsDecorator(
-                    activeColor: Theme.of(context).primaryColorDark,
+                    activeColor: Theme.of(context).colorScheme.primary).primaryColorDark,
                   ),
                 ),
               ],
@@ -120,7 +122,7 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
       bottomBar = SizedBox(
         width: double.infinity,
         height: _bottomBarHeight,
-        child: ElevatedButton(
+        child: FilledButton(
           key: const ValueKey("GetStarted"),
           style: ButtonStyle(
             backgroundColor:
@@ -140,11 +142,11 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(spacingMd),
         child: pageView,
       ),
       bottomNavigationBar: AnimatedSwitcher(
-        duration: 300.milliseconds,
+        duration: durationMedium2,
         child: bottomBar,
       ),
     );
@@ -160,8 +162,8 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
 
   void _nextPage() {
     _pageController.nextPage(
-      duration: 200.milliseconds,
-      curve: Curves.easeIn,
+      duration: durationShort4,
+      curve: curveAccelerated,
     );
   }
 }
@@ -213,7 +215,7 @@ class OnBoardingPage1 extends StatelessWidget {
           height: 200,
           fit: BoxFit.fill,
         ),
-        const SizedBox(height: 16.0),
+        const SizedBox(height: spacingMd),
         Text(
           "GitJournal",
           style: headerTextStyle,
@@ -251,7 +253,7 @@ class OnBoardingPage2 extends StatelessWidget {
           //height: 200,
           fit: BoxFit.fill,
         ),
-        const SizedBox(height: 16.0),
+        const SizedBox(height: spacingMd),
       ],
     );
 
@@ -285,7 +287,7 @@ class OnBoardingPage3 extends StatelessWidget {
           //height: 200,
           fit: BoxFit.fill,
         ),
-        const SizedBox(height: 16.0),
+        const SizedBox(height: spacingMd),
       ],
     );
 
