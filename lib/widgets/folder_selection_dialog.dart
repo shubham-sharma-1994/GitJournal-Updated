@@ -5,6 +5,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:gitjournal/design/tokens/spacing_tokens.dart';
 import 'package:gitjournal/core/folder/notes_folder_fs.dart';
 import 'package:gitjournal/l10n.dart';
 import 'package:provider/provider.dart';
@@ -140,7 +141,7 @@ class FolderMiniTileState extends State<FolderMiniTile> {
     }
 
     return Container(
-      margin: const EdgeInsets.only(left: 8.0),
+      margin: const EdgeInsets.only(left: spacingSm),
       child: Column(
         mainAxisAlignment: mainAxisAlignment,
         crossAxisAlignment: crossAxisAlignment,
