@@ -3,11 +3,17 @@
 name: Goldens
 on:
   workflow_dispatch:
+    inputs:
+      update_goldens:
+        description: "Regenerate golden PNGs with --update-goldens"
+        type: boolean
+        default: false
   pull_request:
   push:
     branches: [upgrade-flutter-latest]
     paths:
       - "test/golden/**"
+      - "tool/generate_golden_gallery.dart"
       - "pubspec.yaml"
       - "lib/**"
       - ".github/workflows/goldens.yml"
@@ -25,11 +31,28 @@ jobs:
           channel: stable
           cache: true
       - run: flutter pub get --suppress-analytics
-      - run: flutter test test/golden
-      - if: failure()
+      - name: Run golden tests
+        run: |
+          if [ "${{ github.event.inputs.update_goldens }}" = "true" ]; then
+            flutter test test/golden --update-goldens
+          else
+            flutter test test/golden
+          fi
+      - name: Generate gallery contact sheet
+        run: dart run tool/generate_golden_gallery.dart
+      - name: Fail if gallery HTML is stale
+        if: ${{ github.event.inputs.update_goldens != 'true' }}
+        run: |
+          git add -N test/golden/gallery/index.html || true
+          if ! git diff --exit-code -- test/golden/gallery/index.html; then
+            echo "::error::test/golden/gallery/index.html is out of date. Run: dart run tool/generate_golden_gallery.dart"
+            exit 1
+          fi
+      - name: Upload golden artifacts
+        if: failure() || github.event.inputs.update_goldens == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: golden-failures
+          name: golden-artifacts
           path: |
             test/golden/**
             **/failures/**
