@@ -20,6 +20,7 @@ import 'package:gitjournal/screens/onboarding_screens.dart';
 import 'package:gitjournal/screens/tag_listing.dart';
 import 'package:gitjournal/settings/app_config.dart';
 import 'package:gitjournal/settings/settings_screen.dart';
+import 'package:gitjournal/settings/settings.dart';
 import 'package:gitjournal/themes.dart';
 import 'package:gitjournal/widgets/folder_selection_dialog.dart';
 import 'package:gitjournal/widgets/main_nav_bar.dart';
@@ -130,7 +131,7 @@ void main() {
   }
 
   // Dialogs: light/dark only (RTL layout is trivial for AlertDialogs).
-  const dialogVariants = <({String name, String theme, Locale locale})>[
+  final dialogVariants = <({String name, String theme, Locale locale})>[
     (name: 'light', theme: DEFAULT_LIGHT_THEME_NAME, locale: Locale('en')),
     (name: 'dark', theme: DEFAULT_DARK_THEME_NAME, locale: Locale('en')),
   ];
