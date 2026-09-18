@@ -41,17 +41,10 @@ jobs:
       - name: Get deps
         run: flutter pub get --suppress-analytics
 
-      - name: Regenerate goldens (M2 intentional visual change)
-        run: flutter test test/golden --update-goldens
+      - name: Run golden tests
+        run: flutter test test/golden
 
-      - name: Upload regenerated goldens
-        uses: actions/upload-artifact@v4
-        with:
-          name: golden-baselines
-          path: test/golden/**/*.png
-          if-no-files-found: warn
-
-      - name: Upload failure diagnostics
+      - name: Upload golden failure diffs
         if: failure()
         uses: actions/upload-artifact@v4
         with:
