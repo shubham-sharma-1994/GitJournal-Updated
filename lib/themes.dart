@@ -5,6 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gitjournal/design/tokens/color_tokens.dart';
@@ -12,102 +13,42 @@ import 'package:gitjournal/design/tokens/color_tokens.dart';
 import 'settings/settings.dart';
 
 class Themes {
-  static final _light = ThemeData(
-    colorScheme: ColorScheme.fromSwatch(
-      primarySwatch: Colors.green,
-    ).copyWith(
-      primary: gjGreenPrimary,
-      secondary: gjBrownSecondary,
-      onPrimary: gjOnPrimaryLight,
+  static final _pageTransitions = const PageTransitionsTheme(builders: {
+    TargetPlatform.android: ZoomPageTransitionsBuilder(),
+    TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+    TargetPlatform.linux: CupertinoPageTransitionsBuilder(),
+    TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+    TargetPlatform.windows: CupertinoPageTransitionsBuilder(),
+  });
+
+  static final _light = FlexThemeData.light(
+    colors: const FlexSchemeColor(
+      primary: gjSeedPrimary,
+      secondary: gjSeedSecondary,
     ),
-    brightness: Brightness.light,
-    primaryColor: gjGreenPrimary,
-    primaryColorLight: gjGreenPrimaryLight,
-    primaryColorDark: gjGreenPrimaryDark,
-    textSelectionTheme: TextSelectionThemeData(
+    useMaterial3: true,
+  ).copyWith(
+    pageTransitionsTheme: _pageTransitions,
+    textSelectionTheme: const TextSelectionThemeData(
       cursorColor: gjGreenPrimaryDark,
       selectionHandleColor: gjGreenPrimary,
       selectionColor: gjSelectionLight,
     ),
-    pageTransitionsTheme: const PageTransitionsTheme(builders: {
-      TargetPlatform.android: ZoomPageTransitionsBuilder(),
-      TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-      TargetPlatform.linux: CupertinoPageTransitionsBuilder(),
-      TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
-      TargetPlatform.windows: CupertinoPageTransitionsBuilder(),
-    }),
-    useMaterial3: false,
   );
 
-  static final _dark = ThemeData(
-    colorScheme: ColorScheme.fromSwatch(
-      primarySwatch: Colors.grey,
-      brightness: Brightness.dark,
-    ).copyWith(
-      primary: gjDarkSurface,
-      secondary: gjLimeAccent,
+  static final _dark = FlexThemeData.dark(
+    colors: const FlexSchemeColor(
+      primary: gjSeedPrimary,
+      secondary: gjSeedSecondary,
     ),
-    brightness: Brightness.dark,
-    primaryColor: gjDarkSurface,
+    useMaterial3: true,
+  ).copyWith(
+    pageTransitionsTheme: _pageTransitions,
     textSelectionTheme: const TextSelectionThemeData(
       cursorColor: gjGreenPrimary,
       selectionHandleColor: gjGreenPrimary,
       selectionColor: gjLimeAccent,
     ),
-    pageTransitionsTheme: const PageTransitionsTheme(builders: {
-      TargetPlatform.android: ZoomPageTransitionsBuilder(),
-      TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-      TargetPlatform.linux: CupertinoPageTransitionsBuilder(),
-      TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
-      TargetPlatform.windows: CupertinoPageTransitionsBuilder(),
-    }),
-    checkboxTheme: CheckboxThemeData(
-      fillColor:
-          WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
-        if (states.contains(WidgetState.disabled)) {
-          return null;
-        }
-        if (states.contains(WidgetState.selected)) {
-          return gjGreenPrimary;
-        }
-        return null;
-      }),
-    ),
-    radioTheme: RadioThemeData(
-      fillColor:
-          WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
-        if (states.contains(WidgetState.disabled)) {
-          return null;
-        }
-        if (states.contains(WidgetState.selected)) {
-          return gjGreenPrimary;
-        }
-        return null;
-      }),
-    ),
-    switchTheme: SwitchThemeData(
-      thumbColor:
-          WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
-        if (states.contains(WidgetState.disabled)) {
-          return null;
-        }
-        if (states.contains(WidgetState.selected)) {
-          return gjGreenPrimary;
-        }
-        return null;
-      }),
-      trackColor:
-          WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
-        if (states.contains(WidgetState.disabled)) {
-          return null;
-        }
-        if (states.contains(WidgetState.selected)) {
-          return gjGreenPrimary;
-        }
-        return null;
-      }),
-    ),
-    useMaterial3: false,
   );
 
   static ThemeData fromName(String name) {
