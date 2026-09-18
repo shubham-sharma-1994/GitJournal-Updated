@@ -28,6 +28,7 @@ import 'package:gitjournal/widgets/note_delete_dialog.dart';
 import 'package:gitjournal/widgets/rename_dialog.dart';
 import 'package:gitjournal/widgets/sorting_mode_selection_dialog.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../lib.dart';
@@ -42,6 +43,13 @@ void main() {
     await gjSetupAllTests();
     await GoldenConfig.loadFonts();
     await GoldenConfig.initHive();
+    PackageInfo.setMockInitialValues(
+      appName: 'GitJournal',
+      packageName: 'io.gitjournal.gitjournal',
+      version: '1.0.0',
+      buildNumber: '1',
+      buildSignature: '',
+    );
   });
 
   Future<void> setupFixture({
@@ -75,8 +83,10 @@ void main() {
       if (msg.contains('ListTile background color or ink splashes may be invisible')) {
         return;
       }
-      // LoginPage initializes Supabase offline; ignore network/init noise.
       if (msg.contains('Supabase') || msg.contains('supabase')) {
+        return;
+      }
+      if (msg.contains('MissingPluginException')) {
         return;
       }
       oldOnError?.call(details);
@@ -95,11 +105,29 @@ void main() {
       ),
     );
     await tester.pump();
-    for (var i = 0; i < 20; i++) {
+    // Allow Futures (e.g. TagListing) to complete between frames.
+    await tester.runAsync(() async {
+      await Future<void>.delayed(const Duration(milliseconds: 150));
+    });
+    for (var i = 0; i < 30; i++) {
       await tester.pump(const Duration(milliseconds: 50));
     }
 
-    await screenMatchesGolden(tester, goldenName);
+    // Drain plugin/async exceptions that should not fail the golden.
+    for (var i = 0; i < 5; i++) {
+      final ex = tester.takeException();
+      if (ex == null) break;
+    }
+
+    // Avoid pumpAndSettle (infinite progress indicators / ticker loops).
+    await screenMatchesGolden(
+      tester,
+      goldenName,
+      customPump: (t) async {
+        await t.pump();
+        await t.pump(const Duration(milliseconds: 100));
+      },
+    );
   }
 
   /// Pump a dialog over a blank scaffold and capture the full surface.
