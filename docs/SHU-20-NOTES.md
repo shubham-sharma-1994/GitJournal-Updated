@@ -15,7 +15,7 @@
 | tags_ | light/dark/fa_rtl | TagListingScreen |
 | onboarding_ | light/dark/fa_rtl | OnBoardingScreen |
 | git_terminal_ | light/dark/fa_rtl | GitTerminalScreen |
-| login_ | light/dark/fa_rtl | LoginPage shell; Supabase init errors ignored offline |
+| login_ | **skipped** | Supabase/gotrue pending timers + app_links plugin — not golden-safe offline |
 | dialog_rename_ | light/dark | RTL skipped (AlertDialog trivial) |
 | dialog_delete_note_ | light/dark | RTL skipped |
 | dialog_sorting_ | light/dark | RTL skipped |

@@ -7,7 +7,6 @@
 import 'package:dart_git/plumbing/git_hash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gitjournal/account/login_screen.dart';
 import 'package:gitjournal/core/folder/sorting_mode.dart';
 import 'package:gitjournal/editors/common_types.dart';
 import 'package:gitjournal/editors/note_editor.dart';
@@ -314,22 +313,9 @@ void main() {
     });
   });
 
-  // LoginPage calls Supabase.initialize in initState (network). We still
-  // capture the scaffold shell; network errors are swallowed in pumpGolden.
-  group('LoginPage goldens', () {
-    testGoldens('login variants', (tester) async {
-      await tester.runAsync(setupFixture);
-      for (final v in goldenVariants) {
-        await pumpGolden(
-          tester,
-          child: const LoginPage(title: 'Login'),
-          themeName: v.theme,
-          locale: v.locale,
-          goldenName: 'login_${v.name}',
-        );
-      }
-    });
-  });
+  // LoginPage skipped: Supabase/gotrue starts pending auto-refresh timers and
+  // app_links MissingPluginException — not golden-safe without a full plugin mock.
+  // See docs/SHU-20-NOTES.md.
 
   group('Dialog goldens (light/dark only — RTL skipped)', () {
     testGoldens('rename dialog', (tester) async {
