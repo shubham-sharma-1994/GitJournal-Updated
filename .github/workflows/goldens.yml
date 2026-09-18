@@ -5,16 +5,22 @@ name: Goldens
 
 on:
   workflow_dispatch:
+  pull_request:
   push:
     branches:
       - upgrade-flutter-latest
     paths:
       - "test/golden/**"
       - "pubspec.yaml"
+      - "lib/themes.dart"
+      - "lib/screens/**"
+      - "lib/widgets/app_drawer.dart"
+      - "lib/settings/settings_screen.dart"
+      - "lib/editors/**"
       - ".github/workflows/goldens.yml"
 
 concurrency:
-  group: goldens-${{ github.ref }}
+  group: goldens-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -37,7 +43,7 @@ jobs:
       - name: Run golden tests
         run: flutter test test/golden
 
-      - name: Upload failure diagnostics
+      - name: Upload golden failure diffs
         if: failure()
         uses: actions/upload-artifact@v4
         with:
@@ -45,3 +51,4 @@ jobs:
           path: |
             test/golden/**
             **/failures/**
+          if-no-files-found: warn
