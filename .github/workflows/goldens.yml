@@ -1,0 +1,54 @@
+# SPDX-FileCopyrightText: 2026 Shubham Sharma
+# SPDX-License-Identifier: Apache-2.0
+
+name: Goldens
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - upgrade-flutter-latest
+    paths:
+      - "test/golden/**"
+      - "pubspec.yaml"
+      - ".github/workflows/goldens.yml"
+
+concurrency:
+  group: goldens-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  Generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.47.4"
+          channel: stable
+          cache: true
+
+      - name: Get deps
+        run: flutter pub get --suppress-analytics
+
+      - name: Generate golden baselines
+        run: flutter test test/golden --update-goldens
+
+      - name: Upload golden images
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-baselines
+          path: test/golden/**/*.png
+          if-no-files-found: warn
+
+      - name: Upload failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-failures
+          path: |
+            test/golden/**
+            **/failures/**
