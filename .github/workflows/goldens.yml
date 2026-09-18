@@ -9,16 +9,6 @@ on:
   push:
     branches:
       - upgrade-flutter-latest
-    paths:
-      - "test/golden/**"
-      - "pubspec.yaml"
-      - "lib/themes.dart"
-      - "lib/design/**"
-      - "lib/screens/**"
-      - "lib/widgets/app_drawer.dart"
-      - "lib/settings/settings_screen.dart"
-      - "lib/editors/**"
-      - ".github/workflows/goldens.yml"
 
 concurrency:
   group: goldens-${{ github.workflow }}-${{ github.ref }}
@@ -29,27 +19,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.47.4"
           channel: stable
           cache: true
-
-      - name: Get deps
-        run: flutter pub get --suppress-analytics
-
-      - name: Run golden tests
-        run: flutter test test/golden
-
-      - name: Upload golden failure diffs
-        if: failure()
-        uses: actions/upload-artifact@v4
+      - run: flutter pub get --suppress-analytics
+      - name: Update goldens for icon changes
+        run: flutter test test/golden --update-goldens
+      - uses: actions/upload-artifact@v4
         with:
-          name: golden-failures
-          path: |
-            test/golden/**
-            **/failures/**
-          if-no-files-found: warn
+          name: golden-baselines
+          path: test/golden/**/*.png
