@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:gitjournal/l10n.dart';
 import 'package:gitjournal/repository_manager.dart';
 import 'package:gitjournal/settings/settings_git_remote.dart';
-import 'package:gitjournal/widgets/app_drawer.dart';
 import 'package:provider/provider.dart';
 
 import 'home_screen.dart';
@@ -98,7 +97,6 @@ class ErrorScreen extends StatelessWidget {
     ];
 
     return Scaffold(
-      drawer: AppDrawer(),
       appBar: AppBar(
         title: Text(context.loc.screensErrorTitle),
       ),

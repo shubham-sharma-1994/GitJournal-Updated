@@ -24,8 +24,10 @@ import 'package:gitjournal/l10n.dart';
 import 'package:gitjournal/repository.dart';
 import 'package:gitjournal/settings/settings.dart';
 import 'package:gitjournal/utils/utils.dart';
-import 'package:gitjournal/widgets/app_bar_menu_button.dart';
-import 'package:gitjournal/widgets/app_drawer.dart';
+import 'package:gitjournal/widgets/main_nav_bar.dart';
+import 'package:gitjournal/widgets/main_app_bar_actions.dart';
+import 'package:gitjournal/widgets/repo_switcher_button.dart';
+import 'package:gitjournal/widgets/setup_git_host_banner.dart';
 import 'package:gitjournal/widgets/folder_selection_dialog.dart';
 import 'package:gitjournal/widgets/new_note_nav_bar.dart';
 import 'package:gitjournal/widgets/note_delete_dialog.dart';
@@ -178,11 +180,14 @@ class _FolderViewState extends State<FolderView> {
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         return [
           SliverAppBar(
-            title: Text(title),
-            leading: inSelectionMode ? backButton : GJAppBarMenuButton(),
+            title: inSelectionMode ? Text(title) : const RepoSwitcherButton(),
+            leading: inSelectionMode ? backButton : null,
             actions: inSelectionMode
                 ? _buildInSelectionNoteActions()
-                : _buildNoteActions(),
+                : [
+                    ..._buildNoteActions(),
+                    ...mainAppBarActions(context),
+                  ],
             forceElevated: true,
           ),
         ];
@@ -259,15 +264,29 @@ class _FolderViewState extends State<FolderView> {
     var settings = context.watch<Settings>();
     final showButtomMenuBar = settings.bottomMenuBar;
 
+    Widget? bottom;
+    if (!inSelectionMode) {
+      bottom = Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (showButtomMenuBar) NewNoteNavBar(onPressed: _newPost),
+          const MainNavBar(),
+        ],
+      );
+    }
+
     return Scaffold(
-      body: Builder(builder: _buildBody),
+      body: Column(
+        children: [
+          const SetupGitHostBanner(),
+          Expanded(child: Builder(builder: _buildBody)),
+        ],
+      ),
       extendBody: true,
-      drawer: AppDrawer(),
       floatingActionButton: createButton,
       floatingActionButtonLocation:
           showButtomMenuBar ? FloatingActionButtonLocation.endDocked : null,
-      bottomNavigationBar:
-          showButtomMenuBar ? NewNoteNavBar(onPressed: _newPost) : null,
+      bottomNavigationBar: bottom,
     );
   }
 
