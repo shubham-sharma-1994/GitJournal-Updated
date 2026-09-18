@@ -7,6 +7,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:gitjournal/design/tokens/radius_tokens.dart';
+import 'package:gitjournal/design/tokens/spacing_tokens.dart';
 import 'package:gitjournal/core/note.dart';
 import 'package:gitjournal/core/notes/note.dart';
 import 'package:gitjournal/utils/markdown.dart';
@@ -48,10 +50,10 @@ class NoteTile extends StatelessWidget {
 
     var tileContent = Container(
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(8)),
+        borderRadius: const BorderRadius.all(Radius.circular(radiusMd)),
         border: Border.all(color: borderColor, width: selected ? 2.0 : 1.0),
       ),
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(spacingMd),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
@@ -66,7 +68,7 @@ class NoteTile extends StatelessWidget {
               highlightText: searchTerm,
               highlightTextLowerCase: searchTermLowerCase,
             ),
-          if (note.title != null) const SizedBox(height: 8.0),
+          if (note.title != null) const SizedBox(height: spacingSm),
           if (note.title == null && note.type == NoteType.Journal)
             HighlightedText(
               text: '${note.created.day} ${DateFormat('MMMM, yyyy').format(note.created)}\n${DateFormat('EEEE HH:mm').format(note.created)}',
@@ -77,7 +79,7 @@ class NoteTile extends StatelessWidget {
               highlightText: searchTerm,
               highlightTextLowerCase: searchTermLowerCase,
             ),
-          if (note.title == null && note.type == NoteType.Journal) const SizedBox(height: 8.0),
+          if (note.title == null && note.type == NoteType.Journal) const SizedBox(height: spacingSm),
           Flexible(
             flex: 1,
             child: _buildBody(context, body),
@@ -86,7 +88,7 @@ class NoteTile extends StatelessWidget {
       ),
     );
 
-    const borderRadius = BorderRadius.all(Radius.circular(8));
+    const borderRadius = BorderRadius.all(Radius.circular(radiusMd));
     return Material(
       borderRadius: borderRadius,
       type: MaterialType.card,

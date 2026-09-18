@@ -5,6 +5,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:gitjournal/design/tokens/spacing_tokens.dart';
 
 import 'package:intl/intl.dart';
 
@@ -130,7 +131,7 @@ class JournalNoteListTile extends StatelessWidget {
     );
 
     var children = <Widget>[
-      const SizedBox(height: 8.0),
+      const SizedBox(height: spacingSm),
       HighlightedText(
         text: '$noteSummary\n', // no minLines option
         maxLines: 3,

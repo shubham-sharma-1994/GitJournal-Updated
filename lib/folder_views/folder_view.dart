@@ -5,6 +5,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:gitjournal/design/tokens/spacing_tokens.dart';
 import 'package:gitjournal/analytics/analytics.dart';
 import 'package:gitjournal/app_router.dart';
 import 'package:gitjournal/core/folder/filtered_notes_folder.dart';
@@ -164,7 +165,7 @@ class _FolderViewState extends State<FolderView> {
     if (!showButtomMenuBar) {
       folderView = SliverPadding(
         sliver: folderView,
-        padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 48.0),
+        padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, spacingXl + spacingMd),
       );
     }
 
@@ -275,6 +276,7 @@ class _FolderViewState extends State<FolderView> {
       );
     }
 
+    // FAB sits above NavigationBar (no extendBody overlap).
     return Scaffold(
       body: Column(
         children: [
@@ -282,10 +284,9 @@ class _FolderViewState extends State<FolderView> {
           Expanded(child: Builder(builder: _buildBody)),
         ],
       ),
-      extendBody: true,
+      extendBody: false,
       floatingActionButton: createButton,
-      floatingActionButtonLocation:
-          showButtomMenuBar ? FloatingActionButtonLocation.endDocked : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: bottom,
     );
   }
@@ -582,7 +583,7 @@ class _SliverHeader extends StatelessWidget {
 
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
+        padding: const EdgeInsets.fromLTRB(spacingMd, spacingMd, spacingMd, spacingSm),
         child: Text(text, style: textTheme.titleSmall),
       ),
     );

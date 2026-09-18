@@ -5,6 +5,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:gitjournal/design/tokens/spacing_tokens.dart';
 import 'package:function_types/function_types.dart';
 import 'package:gitjournal/editors/common_types.dart';
 
@@ -25,21 +26,21 @@ class NewNoteNavBar extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.all(4.0),
+            padding: const EdgeInsets.all(spacingXs),
             child: IconButton(
               icon: Icon(Icons.checklist),
               onPressed: () => onPressed(EditorType.Checklist),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(4.0),
+            padding: const EdgeInsets.all(spacingXs),
             child: IconButton(
               icon: Icon(Icons.article),
               onPressed: () => onPressed(EditorType.Markdown),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(4.0),
+            padding: const EdgeInsets.all(spacingXs),
             child: IconButton(
               icon: Icon(Icons.menu_book),
               onPressed: () => onPressed(EditorType.Journal),
