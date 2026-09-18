@@ -1,3 +1,4 @@
+import 'package:gitjournal/design/tokens/motion_tokens.dart';
 /*
  * SPDX-FileCopyrightText: 2019-2021 Vishesh Handa <me@vhanda.in>
  *
@@ -253,7 +254,7 @@ class _HideWidget extends StatelessWidget {
     return IgnorePointer(
       ignoring: !visible,
       child: AnimatedOpacity(
-        duration: 500.milliseconds,
+        duration: durationLong2,
         opacity: opacity,
         child: child,
       ),
