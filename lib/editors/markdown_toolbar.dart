@@ -6,7 +6,6 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:gitjournal/forks/icon_button_more_gestures.dart' as fork;
 
@@ -50,17 +49,17 @@ class MarkdownToolBar extends StatelessWidget {
             onPressed: () => _modifyCurrentWord('**'),
           ),
           fork.IconButton(
-            icon: const FaIcon(FontAwesomeIcons.listUl),
+            icon: Icon(Icons.format_list_bulleted),
             padding: const EdgeInsets.all(0.0),
             onPressed: () => _modifyCurrentLine('- '),
           ),
           fork.IconButton(
-            icon: const FaIcon(FontAwesomeIcons.listOl),
+            icon: Icon(Icons.format_list_numbered),
             padding: const EdgeInsets.all(0.0),
             onPressed: () => _modifyCurrentLine('1. '),
           ),
           fork.IconButton(
-            icon: const FaIcon(FontAwesomeIcons.listCheck),
+            icon: Icon(Icons.checklist),
             padding: const EdgeInsets.all(0.0),
             onPressed: () => _modifyCurrentLine('- [ ] '),
           ),

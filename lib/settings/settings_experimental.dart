@@ -6,7 +6,6 @@
 
 import 'dart:convert';
 
-import 'package:community_material_icon/community_material_icon.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:gitjournal/l10n.dart';
@@ -43,7 +42,7 @@ class _ExperimentalSettingsScreenState
           padding: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 0.0),
           children: <Widget>[
             const Center(
-              child: Icon(CommunityMaterialIcons.flask, size: 64 * 2),
+              child: Icon(Icons.science, size: 64 * 2),
             ),
             const Divider(),
             SwitchListTile(

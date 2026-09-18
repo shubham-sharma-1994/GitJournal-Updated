@@ -7,7 +7,6 @@
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:function_types/function_types.dart';
 import 'package:gitjournal/l10n.dart';
 import 'package:gitjournal/repository.dart';
@@ -146,7 +145,7 @@ class __CurrentRepoState extends State<_CurrentRepo>
         RotationTransition(
           turns: _animation,
           child: IconButton(
-            icon: const FaIcon(FontAwesomeIcons.angleDown),
+            icon: Icon(Icons.expand_more),
             onPressed: _pressed,
           ),
         ),
@@ -207,7 +206,7 @@ class ThemeSwitcherButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: const FaIcon(FontAwesomeIcons.solidMoon),
+      child: Icon(Icons.dark_mode),
       onTap: () {
         var theme = Theme.of(context);
         var settings = context.read<Settings>();

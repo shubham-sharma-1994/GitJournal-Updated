@@ -7,7 +7,6 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gitjournal/core/folder/flattened_filtered_notes_folder.dart';
 import 'package:gitjournal/core/folder/notes_folder_fs.dart';
 import 'package:gitjournal/core/markdown/md_yaml_note_serializer.dart';
@@ -76,7 +75,7 @@ class TagListingScreen extends StatelessWidget {
     var titleColor = theme.textTheme.displayLarge!.color;
 
     return ListTile(
-      leading: FaIcon(FontAwesomeIcons.tag, color: titleColor),
+      leading: Icon(Icons.label, color: titleColor),
       title: Text(tag),
       onTap: () {
         var route = MaterialPageRoute(
