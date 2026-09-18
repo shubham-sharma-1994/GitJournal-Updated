@@ -111,6 +111,7 @@ dev_dependencies:
   flutter_lints: ^3.0.1
   flutter_test:
     sdk: flutter
+  golden_toolkit: ^0.15.0
   hive_generator_plus: ^5.0.0
   process_run: ^0.12.3+2
   test:
