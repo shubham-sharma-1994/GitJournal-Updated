@@ -1,5 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2023 Vishesh Handa <me@vhanda.in>
+ * SPDX-FileCopyrightText: 2026 Shubham Sharma
  *
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
@@ -12,7 +13,6 @@ import 'package:gitjournal/change_notifiers.dart';
 import 'package:gitjournal/l10n.dart';
 import 'package:gitjournal/logger/logger.dart';
 import 'package:gitjournal/repository_manager.dart';
-import 'package:gitjournal/screens.dart';
 import 'package:gitjournal/settings/app_config.dart';
 import 'package:gitjournal/settings/settings.dart';
 import 'package:gitjournal/themes.dart';
@@ -21,85 +21,113 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 Future<void> main() async {
-  //TestWidgetsFlutterBinding.ensureInitialized();
   WidgetsFlutterBinding.ensureInitialized();
 
-  // SharedPreferences.setMockInitialValues({});
-
-  var pref = await SharedPreferences.getInstance();
+  final pref = await SharedPreferences.getInstance();
 
   AppConfig.instance.load(pref);
 
-  var appConfig = AppConfig.instance;
+  final appConfig = AppConfig.instance;
   Log.i("AppConfig ${appConfig.toMap()}");
 
   final gitBaseDirectory = (await getTemporaryDirectory()).path;
   final cacheDir = (await getTemporaryDirectory()).path;
 
-  var repoManager = RepositoryManager(
+  final repoManager = RepositoryManager(
     gitBaseDir: gitBaseDirectory,
     cacheDir: cacheDir,
     pref: pref,
   );
   await repoManager.buildActiveRepository();
-  var repo = repoManager.currentRepo!;
-  var settings = repo.settings;
-  var storageConfig = repo.storageConfig;
-  var appRouter = AppRouter(
+  final repo = repoManager.currentRepo!;
+  final settings = repo.settings;
+  final storageConfig = repo.storageConfig;
+  final appRouter = AppRouter(
     settings: settings,
     appConfig: appConfig,
     storageConfig: storageConfig,
   );
 
-  var buildAppDeps = (BuildContext context, Widget child) {
+  Widget wrapDeps(Widget child) {
     return GitJournalChangeNotifiers(
       repoManager: repoManager,
       appConfig: appConfig,
       pref: pref,
       child: child,
     );
-  };
+  }
 
-  var widgetBook = Widgetbook(
-    localizationsDelegates: gitJournalLocalizationDelegates,
-    supportedLocales: gitJournalSupportedLocales,
-    categories: [
-      buildWidgetbookCategory("Screens", allScreens, buildAppDeps),
-      WidgetbookCategory(
-        name: 'Router',
-        widgets: [
-          WidgetbookComponent(
-            name: "All Components",
-            isExpanded: true,
-            useCases: [
-              for (var routeName in AppRoute.all)
-                WidgetbookUseCase(
+  runApp(
+    Widgetbook.material(
+      directories: [
+        WidgetbookFolder(
+          name: 'Router',
+          children: [
+            WidgetbookComponent(
+              name: 'Named routes',
+              useCases: [
+                for (final routeName in AppRoute.all)
+                  WidgetbookUseCase(
                     name: routeName,
-                    builder: (_) => appRouter.screenForRoute(
-                        routeName, repo, storageConfig, "", [], () {})!),
-            ],
-          ),
-        ],
-      ),
-    ],
-    appInfo: AppInfo(name: 'GitJournal'),
-    themes: [
-      WidgetbookTheme(
-        name: 'Light',
-        data: Themes.fromName(DEFAULT_LIGHT_THEME_NAME),
-      ),
-      WidgetbookTheme(
-        name: 'Dark',
-        data: Themes.fromName(DEFAULT_DARK_THEME_NAME),
-      ),
-    ],
-    devices: const [
-      Apple.iPhone13Mini,
-      Apple.iPhone11,
-      Apple.iPhone8Plus,
-      Samsung.s21ultra,
-    ],
+                    builder: (context) {
+                      final screen = appRouter.screenForRoute(
+                        routeName,
+                        repo,
+                        storageConfig,
+                        '',
+                        [],
+                        () {},
+                      );
+                      return wrapDeps(screen ?? const SizedBox.shrink());
+                    },
+                  ),
+              ],
+            ),
+          ],
+        ),
+        WidgetbookFolder(
+          name: 'Smoke',
+          children: [
+            WidgetbookComponent(
+              name: 'Material',
+              useCases: [
+                WidgetbookUseCase(
+                  name: 'Hello',
+                  builder: (context) => wrapDeps(
+                    const Scaffold(
+                      body: Center(child: Text('GitJournal Widgetbook')),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
+      addons: [
+        MaterialThemeAddon(
+          themes: [
+            WidgetbookTheme(
+              name: 'Light',
+              data: Themes.fromName(DEFAULT_LIGHT_THEME_NAME),
+            ),
+            WidgetbookTheme(
+              name: 'Dark',
+              data: Themes.fromName(DEFAULT_DARK_THEME_NAME),
+            ),
+          ],
+        ),
+        LocalizationAddon(
+          locales: gitJournalSupportedLocales,
+          localizationsDelegates: gitJournalLocalizationDelegates,
+          initialLocale: const Locale('en'),
+        ),
+        ViewportAddon([
+          IosViewports.iPhone13,
+          IosViewports.iPhoneSE,
+          AndroidViewports.samsungGalaxyS20,
+        ]),
+      ],
+    ),
   );
-
-  runApp(widgetBook);
 }
