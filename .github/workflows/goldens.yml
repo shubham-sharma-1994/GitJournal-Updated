@@ -18,7 +18,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  Generate:
+  Verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,15 +34,8 @@ jobs:
       - name: Get deps
         run: flutter pub get --suppress-analytics
 
-      - name: Generate golden baselines
-        run: flutter test test/golden --update-goldens
-
-      - name: Upload golden images
-        uses: actions/upload-artifact@v4
-        with:
-          name: golden-baselines
-          path: test/golden/**/*.png
-          if-no-files-found: warn
+      - name: Run golden tests
+        run: flutter test test/golden
 
       - name: Upload failure diagnostics
         if: failure()
