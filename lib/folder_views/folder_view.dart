@@ -30,7 +30,7 @@ import 'package:gitjournal/widgets/main_app_bar_actions.dart';
 import 'package:gitjournal/widgets/repo_switcher_button.dart';
 import 'package:gitjournal/widgets/setup_git_host_banner.dart';
 import 'package:gitjournal/widgets/folder_selection_dialog.dart';
-import 'package:gitjournal/widgets/new_note_nav_bar.dart';
+import 'package:gitjournal/widgets/new_note_speed_dial.dart';
 import 'package:gitjournal/widgets/note_delete_dialog.dart';
 import 'package:gitjournal/widgets/note_search_delegate.dart';
 import 'package:gitjournal/widgets/sorting_mode_selection_dialog.dart';
@@ -70,6 +70,9 @@ class _FolderViewState extends State<FolderView> {
 
   var _selectedNotes = <Note>[];
   bool get inSelectionMode => _selectedNotes.isNotEmpty;
+
+  /// Shared with the nav-bar "New" slot (SHU-23).
+  final ValueNotifier<bool> _dialOpen = ValueNotifier(false);
 
   @override
   void initState() {
@@ -111,6 +114,7 @@ class _FolderViewState extends State<FolderView> {
   void dispose() {
     _sortedNotesFolder?.dispose();
     _pinnedNotesFolder?.dispose();
+    _dialOpen.dispose();
 
     super.dispose();
   }
@@ -158,16 +162,11 @@ class _FolderViewState extends State<FolderView> {
       );
     }
 
-    var settings = context.watch<Settings>();
-    final showButtomMenuBar = settings.bottomMenuBar;
-
-    // So the FAB doesn't hide parts of the last entry
-    if (!showButtomMenuBar) {
-      folderView = SliverPadding(
-        sliver: folderView,
-        padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, spacingXl + spacingMd),
-      );
-    }
+    // Keep list clear of the speed-dial FAB.
+    folderView = SliverPadding(
+      sliver: folderView,
+      padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, spacingXl + spacingMd),
+    );
 
     var backButton = IconButton(
       icon: const Icon(Icons.arrow_back),
@@ -256,36 +255,25 @@ class _FolderViewState extends State<FolderView> {
 
   @override
   Widget build(BuildContext context) {
-    var settings = context.watch<Settings>();
-    final showButtomMenuBar = settings.bottomMenuBar;
-
-    var createButton = FloatingActionButton(
-      key: const ValueKey("FAB"),
-      onPressed: showButtomMenuBar
-          ? () => _newPost(
-                widget.notesFolder.config.defaultEditor.toEditorType(),
-              )
-          : _showNewNoteTypePicker,
-      child: const Icon(Icons.add),
-    );
-
+    // SHU-23: speed dial (FAB) + 4th nav "New" share [_dialOpen].
+    // Old NewNoteNavBar / modal type picker removed.
     Widget? bottom;
     if (!inSelectionMode) {
-      bottom = Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (showButtomMenuBar) NewNoteNavBar(onPressed: _newPost),
-          const MainNavBar(selectedIndex: MainNavBar.indexHome),
-        ],
+      bottom = MainNavBar(
+        selectedIndex: MainNavBar.indexHome,
+        onNewNoteTap: () => _dialOpen.value = !_dialOpen.value,
       );
     }
 
-    // FAB sits above NavigationBar (no extendBody overlap).
-    // Setup Git Host banner lives inside the scroll body (not a second app bar).
     return Scaffold(
       body: Builder(builder: _buildBody),
       extendBody: false,
-      floatingActionButton: createButton,
+      floatingActionButton: inSelectionMode
+          ? null
+          : NewNoteSpeedDial(
+              openCloseDial: _dialOpen,
+              onPressed: _newPost,
+            ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: bottom,
     );
@@ -354,41 +342,6 @@ class _FolderViewState extends State<FolderView> {
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
   }
 
-
-  /// Transient type picker anchored via modal sheet (FAB path when bottom menu is off).
-  Future<void> _showNewNoteTypePicker() async {
-    final type = await showModalBottomSheet<EditorType>(
-      context: context,
-      showDragHandle: true,
-      builder: (ctx) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.checklist),
-                title: Text(context.loc.settingsEditorsChecklistEditor),
-                onTap: () => Navigator.pop(ctx, EditorType.Checklist),
-              ),
-              ListTile(
-                leading: const Icon(Icons.article),
-                title: Text(context.loc.settingsEditorsMarkdownEditor),
-                onTap: () => Navigator.pop(ctx, EditorType.Markdown),
-              ),
-              ListTile(
-                leading: const Icon(Icons.menu_book),
-                title: Text(context.loc.settingsEditorsJournalEditor),
-                onTap: () => Navigator.pop(ctx, EditorType.Journal),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-    if (type != null && mounted) {
-      await _newPost(type);
-    }
-  }
 
   Future<void> _sortButtonPressed() async {
     if (_sortedNotesFolder == null) {
