@@ -105,11 +105,12 @@ void main() {
     );
     await tester.pump();
     // Allow Futures (e.g. TagListing) to complete between frames.
-    await tester.runAsync(() async {
-      await Future<void>.delayed(const Duration(milliseconds: 300));
-    });
-    for (var i = 0; i < 40; i++) {
-      await tester.pump(const Duration(milliseconds: 50));
+    // Flush real async (tag/folder futures) between frames.
+    for (var i = 0; i < 25; i++) {
+      await tester.runAsync(() async {
+        await Future<void>.delayed(const Duration(milliseconds: 40));
+      });
+      await tester.pump(const Duration(milliseconds: 40));
     }
 
     // Drain plugin/async exceptions that should not fail the golden.
