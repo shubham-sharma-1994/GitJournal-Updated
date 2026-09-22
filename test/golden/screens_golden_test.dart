@@ -106,9 +106,9 @@ void main() {
     await tester.pump();
     // Allow Futures (e.g. TagListing) to complete between frames.
     await tester.runAsync(() async {
-      await Future<void>.delayed(const Duration(milliseconds: 150));
+      await Future<void>.delayed(const Duration(milliseconds: 300));
     });
-    for (var i = 0; i < 30; i++) {
+    for (var i = 0; i < 40; i++) {
       await tester.pump(const Duration(milliseconds: 50));
     }
 

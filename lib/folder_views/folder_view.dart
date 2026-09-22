@@ -275,7 +275,7 @@ class _FolderViewState extends State<FolderView> {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (showButtomMenuBar) NewNoteNavBar(onPressed: _newPost),
-          const MainNavBar(),
+          const MainNavBar(selectedIndex: MainNavBar.indexHome),
         ],
       );
     }

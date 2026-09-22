@@ -155,7 +155,7 @@ class FolderListingScreen extends StatelessWidget {
         ],
       ),
       body: Scrollbar(child: treeView),
-      bottomNavigationBar: const MainNavBar(),
+      bottomNavigationBar: const MainNavBar(selectedIndex: MainNavBar.indexFolders),
       floatingActionButton: CreateFolderButton(),
     );
   }
@@ -183,7 +183,7 @@ class FolderListingScreen extends StatelessWidget {
             actions: mainAppBarActions(context),
           ),
           body: child,
-          bottomNavigationBar: const MainNavBar(),
+          bottomNavigationBar: const MainNavBar(selectedIndex: MainNavBar.indexFolders),
           floatingActionButton: CreateFolderButton(),
         );
       },
