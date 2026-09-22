@@ -193,6 +193,47 @@ void main() {
         );
       }
     });
+
+    // SHU-23: speed-dial open state (closed state is home_*).
+    testGoldens('home speed dial open', (tester) async {
+      await tester.runAsync(setupFixture);
+      for (final v in goldenVariants) {
+        await tester.binding.setSurfaceSize(GoldenConfig.surfaceSize);
+        addTearDown(() async {
+          await tester.binding.setSurfaceSize(null);
+        });
+        await tester.pumpWidget(
+          GoldenConfig.wrap(
+            child: HomeScreen(),
+            themeName: v.theme,
+            locale: v.locale,
+            repoManager: repoManager,
+            pref: pref,
+          ),
+        );
+        for (var i = 0; i < 25; i++) {
+          await tester.runAsync(() async {
+            await Future<void>.delayed(const Duration(milliseconds: 40));
+          });
+          await tester.pump(const Duration(milliseconds: 40));
+        }
+        final fab = find.byKey(const ValueKey('FAB'));
+        expect(fab, findsOneWidget);
+        await tester.tap(fab);
+        // Speed-dial stagger animation ~300ms.
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 400));
+        await tester.pump(const Duration(milliseconds: 200));
+        await screenMatchesGolden(
+          tester,
+          'home_dial_open_${v.name}',
+          customPump: (t) async {
+            await t.pump();
+            await t.pump(const Duration(milliseconds: 100));
+          },
+        );
+      }
+    });
   });
 
   // navbar_*.png was an isolated MainNavBar component test with a stub
@@ -207,7 +248,9 @@ void main() {
           child: Scaffold(
             appBar: AppBar(title: const Text('Nav')),
             body: const Center(child: Text('body')),
-            bottomNavigationBar: const MainNavBar(),
+            bottomNavigationBar: MainNavBar(
+              onNewNoteTap: () {},
+            ),
           ),
           themeName: v.theme,
           locale: v.locale,
