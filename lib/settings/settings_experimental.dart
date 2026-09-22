@@ -42,7 +42,7 @@ class _ExperimentalSettingsScreenState
           padding: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 0.0),
           children: <Widget>[
             const Center(
-              child: Icon(Icons.science, size: 64 * 2),
+              child: Icon(Icons.science_outlined, size: 64 * 2),
             ),
             const Divider(),
             SwitchListTile(

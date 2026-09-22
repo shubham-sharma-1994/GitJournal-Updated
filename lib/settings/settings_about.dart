@@ -26,7 +26,7 @@ class SettingsAboutPage extends StatelessWidget {
         const Divider(),
         const VersionNumberTile(),
         SettingsTile(
-          iconData: Icons.shield,
+          iconData: Icons.shield_outlined,
           title: context.loc.settingsPrivacy,
           subtitle: _privacyUrl.replaceAll('https://', ''),
           onTap: () {
@@ -37,7 +37,7 @@ class SettingsAboutPage extends StatelessWidget {
           },
         ),
         SettingsTile(
-          iconData: Icons.description,
+          iconData: Icons.description_outlined,
           title: context.loc.settingsTerms,
           subtitle: _termsUrl.replaceAll('https://', ''),
           onTap: () {
