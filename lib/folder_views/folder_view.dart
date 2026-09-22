@@ -162,6 +162,8 @@ class _FolderViewState extends State<FolderView> {
       );
     }
 
+    var settings = context.watch<Settings>();
+
     // Keep list clear of the speed-dial FAB.
     folderView = SliverPadding(
       sliver: folderView,
