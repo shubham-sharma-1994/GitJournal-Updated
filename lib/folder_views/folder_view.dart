@@ -479,29 +479,39 @@ class _FolderViewState extends State<FolderView> {
   List<Widget> _buildNoteActions() {
     final repo = context.watch<GitJournalRepo>();
 
-    var extraActions = PopupMenuButton<DropDownChoices>(
+    // SHU-22 app bar: Search + single Sort&View menu (repo switcher is title).
+    final sortAndView = PopupMenuButton<String>(
       key: const ValueKey("PopupMenu"),
-      onSelected: (DropDownChoices choice) {
-        switch (choice) {
-          case DropDownChoices.SortingOptions:
+      tooltip: 'Sort & view',
+      icon: const Icon(Icons.tune),
+      onSelected: (value) {
+        switch (value) {
+          case 'sort':
             _sortButtonPressed();
             break;
-
-          case DropDownChoices.ViewOptions:
+          case 'layout':
+            _folderViewChooserSelected();
+            break;
+          case 'headers':
             _configureViewButtonPressed();
             break;
         }
       },
-      itemBuilder: (BuildContext context) => <PopupMenuEntry<DropDownChoices>>[
-        PopupMenuItem<DropDownChoices>(
+      itemBuilder: (context) => [
+        PopupMenuItem(
           key: const ValueKey("SortingOptions"),
-          value: DropDownChoices.SortingOptions,
+          value: 'sort',
           child: Text(context.loc.widgetsFolderViewSortingOptions),
         ),
+        PopupMenuItem(
+          key: const ValueKey("FolderViewSelector"),
+          value: 'layout',
+          child: Text(context.loc.widgetsFolderViewViewsSelect),
+        ),
         if (_viewType == FolderViewType.Standard)
-          PopupMenuItem<DropDownChoices>(
+          PopupMenuItem(
             key: const ValueKey("ViewOptions"),
-            value: DropDownChoices.ViewOptions,
+            value: 'headers',
             child: Text(context.loc.widgetsFolderViewViewOptions),
           ),
       ],
@@ -509,13 +519,9 @@ class _FolderViewState extends State<FolderView> {
 
     return <Widget>[
       IconButton(
-        icon: const Icon(Icons.library_books),
-        onPressed: _folderViewChooserSelected,
-        key: const ValueKey("FolderViewSelector"),
-      ),
-      if (repo.remoteGitRepoConfigured) SyncButton(),
-      IconButton(
+        key: const ValueKey("Search"),
         icon: const Icon(Icons.search),
+        tooltip: MaterialLocalizations.of(context).searchFieldLabel,
         onPressed: () {
           logEvent(Event.SearchButtonPressed);
           showSearch(
@@ -527,7 +533,8 @@ class _FolderViewState extends State<FolderView> {
           );
         },
       ),
-      extraActions,
+      sortAndView,
+      if (repo.remoteGitRepoConfigured) SyncButton(),
     ];
   }
 
