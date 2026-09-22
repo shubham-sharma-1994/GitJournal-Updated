@@ -157,7 +157,20 @@ class StandardNoteListTile extends StatelessWidget {
         break;
 
       case StandardViewHeader.TitleGenerated:
-        title = note.title ?? noteSummary;
+        // Prefer explicit title, then summary (async), then first body line /
+        // file name so rows never render a blank title while summary loads.
+        final explicit = note.title?.trim();
+        if (explicit != null && explicit.isNotEmpty) {
+          title = explicit;
+        } else {
+          final summaryLine = noteSummary.trim().split('\n').first.trim();
+          if (summaryLine.isNotEmpty) {
+            title = summaryLine;
+          } else {
+            final bodyLine = note.body.trim().split('\n').first.trim();
+            title = bodyLine.isNotEmpty ? bodyLine : note.fileName;
+          }
+        }
         break;
     }
 

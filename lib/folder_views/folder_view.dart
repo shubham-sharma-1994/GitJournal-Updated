@@ -202,6 +202,7 @@ class _FolderViewState extends State<FolderView> {
         child: Scrollbar(
           child: Builder(builder: (context) {
             var view = CustomScrollView(slivers: [
+              const SliverToBoxAdapter(child: SetupGitHostBanner()),
               if (havePinnedNotes)
                 _SliverHeader(text: context.loc.widgetsFolderViewPinned),
               if (havePinnedNotes) pinnedFolderView,
@@ -255,15 +256,18 @@ class _FolderViewState extends State<FolderView> {
 
   @override
   Widget build(BuildContext context) {
-    var createButton = FloatingActionButton(
-      key: const ValueKey("FAB"),
-      onPressed: () =>
-          _newPost(widget.notesFolder.config.defaultEditor.toEditorType()),
-      child: const Icon(Icons.add),
-    );
-
     var settings = context.watch<Settings>();
     final showButtomMenuBar = settings.bottomMenuBar;
+
+    var createButton = FloatingActionButton(
+      key: const ValueKey("FAB"),
+      onPressed: showButtomMenuBar
+          ? () => _newPost(
+                widget.notesFolder.config.defaultEditor.toEditorType(),
+              )
+          : _showNewNoteTypePicker,
+      child: const Icon(Icons.add),
+    );
 
     Widget? bottom;
     if (!inSelectionMode) {
@@ -277,13 +281,9 @@ class _FolderViewState extends State<FolderView> {
     }
 
     // FAB sits above NavigationBar (no extendBody overlap).
+    // Setup Git Host banner lives inside the scroll body (not a second app bar).
     return Scaffold(
-      body: Column(
-        children: [
-          const SetupGitHostBanner(),
-          Expanded(child: Builder(builder: _buildBody)),
-        ],
-      ),
+      body: Builder(builder: _buildBody),
       extendBody: false,
       floatingActionButton: createButton,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
@@ -352,6 +352,42 @@ class _FolderViewState extends State<FolderView> {
     );
     await Navigator.push(context, route);
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
+  }
+
+
+  /// Transient type picker anchored via modal sheet (FAB path when bottom menu is off).
+  Future<void> _showNewNoteTypePicker() async {
+    final type = await showModalBottomSheet<EditorType>(
+      context: context,
+      showDragHandle: true,
+      builder: (ctx) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.checklist),
+                title: Text(context.loc.settingsEditorsChecklistEditor),
+                onTap: () => Navigator.pop(ctx, EditorType.Checklist),
+              ),
+              ListTile(
+                leading: const Icon(Icons.article),
+                title: Text(context.loc.settingsEditorsMarkdownEditor),
+                onTap: () => Navigator.pop(ctx, EditorType.Markdown),
+              ),
+              ListTile(
+                leading: const Icon(Icons.menu_book),
+                title: Text(context.loc.settingsEditorsJournalEditor),
+                onTap: () => Navigator.pop(ctx, EditorType.Journal),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+    if (type != null && mounted) {
+      await _newPost(type);
+    }
   }
 
   Future<void> _sortButtonPressed() async {
