@@ -6,6 +6,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:git_setup/screens.dart';
+import 'package:gitjournal/design/tokens/radius_tokens.dart';
+import 'package:gitjournal/design/tokens/spacing_tokens.dart';
 import 'package:gitjournal/l10n.dart';
 import 'package:gitjournal/repository.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +15,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const _kDismissKey = 'setup_git_host_banner_dismissed';
 
-/// Dismissible Home banner when remote git host is not configured.
+/// Dismissible in-body card when remote git host is not configured.
+/// Sits under the AppBar as content — not a second app bar.
 class SetupGitHostBanner extends StatefulWidget {
   const SetupGitHostBanner({super.key});
 
@@ -57,21 +60,32 @@ class _SetupGitHostBannerState extends State<SetupGitHostBanner> {
     }
 
     final theme = Theme.of(context);
-    return Material(
-      color: theme.colorScheme.secondaryContainer,
-      child: ListTile(
-        leading: Icon(Icons.cloud_upload, color: theme.colorScheme.onSecondaryContainer),
-        title: Text(
-          context.loc.drawerSetup,
-          style: TextStyle(color: theme.colorScheme.onSecondaryContainer),
+    final onContainer = theme.colorScheme.onSecondaryContainer;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(spacingMd, spacingSm, spacingMd, spacingSm),
+      child: Material(
+        color: theme.colorScheme.secondaryContainer,
+        elevation: 0,
+        borderRadius: BorderRadius.circular(radiusMd),
+        child: ListTile(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radiusMd),
+          ),
+          leading: Icon(Icons.cloud_upload_outlined, color: onContainer),
+          title: Text(
+            context.loc.drawerSetup,
+            style: theme.textTheme.titleSmall?.copyWith(color: onContainer),
+          ),
+          trailing: IconButton(
+            icon: Icon(Icons.close, color: onContainer),
+            tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+            onPressed: _dismiss,
+          ),
+          onTap: () {
+            Navigator.of(context).pushNamed(GitHostSetupScreen.routePath);
+          },
         ),
-        trailing: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: _dismiss,
-        ),
-        onTap: () {
-          Navigator.of(context).pushNamed(GitHostSetupScreen.routePath);
-        },
       ),
     );
   }
