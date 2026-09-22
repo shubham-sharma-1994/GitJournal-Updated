@@ -13,13 +13,21 @@ import 'package:gitjournal/screens/tag_listing.dart';
 
 /// Material 3 bottom destinations for the three primary app screens.
 class MainNavBar extends StatelessWidget {
-  const MainNavBar({super.key});
+  /// When set, forces the highlighted destination (needed when the route
+  /// has no [RouteSettings.name], e.g. tests or nested pushes).
+  final int? selectedIndex;
+
+  const MainNavBar({super.key, this.selectedIndex});
 
   static const destinations = [
     HomeScreen.routePath,
     FolderListingScreen.routePath,
     TagListingScreen.routePath,
   ];
+
+  static const indexHome = 0;
+  static const indexFolders = 1;
+  static const indexTags = 2;
 
   static int indexForRoute(String? route) {
     final i = destinations.indexOf(route ?? '');
@@ -29,13 +37,18 @@ class MainNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final route = ModalRoute.of(context)?.settings.name;
-    final selected = indexForRoute(route);
+    final selected = selectedIndex ?? indexForRoute(route);
 
     return NavigationBar(
-      selectedIndex: selected,
+      selectedIndex: selected.clamp(0, destinations.length - 1),
       onDestinationSelected: (index) {
         final to = destinations[index];
         if (to == route) return;
+        // Also skip if we are already on this destination via forced index
+        // and the named route matches the destination path when present.
+        if (selectedIndex == index && (route == null || route == to)) {
+          // still navigate if route name is missing so real navigation works
+        }
         Log.i('MainNavBar: $route -> $to');
         Navigator.of(context).pushReplacementNamed(to);
       },
