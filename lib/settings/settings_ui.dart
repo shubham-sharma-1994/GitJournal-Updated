@@ -47,7 +47,7 @@ class SettingsUIScreen extends StatelessWidget {
         if (feature_themes)
           SettingsTile(
             title: context.loc.settingsThemeLight,
-            iconData: Icons.light_mode,
+            iconData: Icons.light_mode_outlined,
             onTap: () {
               var route = MaterialPageRoute(
                 builder: (context) =>
@@ -61,7 +61,7 @@ class SettingsUIScreen extends StatelessWidget {
         if (feature_themes)
           SettingsTile(
             title: context.loc.settingsThemeDark,
-            iconData: Icons.dark_mode,
+            iconData: Icons.dark_mode_outlined,
             onTap: () {
               var route = MaterialPageRoute(
                 builder: (context) =>

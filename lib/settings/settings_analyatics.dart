@@ -21,7 +21,7 @@ class SettingsAnalytics extends StatelessWidget {
     var list = ListView(
       children: [
         const Center(
-          child: Icon(Icons.area_chart, size: 64.0 * 2),
+          child: Icon(Icons.area_chart_outlined, size: 64.0 * 2),
         ),
         const Divider(),
         const _AnalyticsSwitchListTile(),

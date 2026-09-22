@@ -35,7 +35,7 @@ class SettingsScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: spacingMd),
       children: [
         SettingsTile(
-          iconData: Icons.brush,
+          iconData: Icons.brush_outlined,
           title: context.loc.settingsListUserInterfaceTitle,
           subtitle: context.loc.settingsListUserInterfaceSubtitle,
           onTap: () {
@@ -49,7 +49,7 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
         SettingsTile(
-          iconData: Icons.merge,
+          iconData: Icons.merge_outlined,
           title: context.loc.settingsListGitTitle,
           subtitle: context.loc.settingsListGitSubtitle,
           onTap: () {
@@ -63,7 +63,7 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
         SettingsTile(
-          iconData: Icons.edit_note,
+          iconData: Icons.edit_note_outlined,
           title: context.loc.settingsListEditorTitle,
           subtitle: context.loc.settingsListEditorSubtitle,
           onTap: () {
@@ -77,7 +77,7 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
         SettingsTile(
-          iconData: Icons.storage,
+          iconData: Icons.sd_storage_outlined,
           title: context.loc.settingsListStorageTitle,
           subtitle: context.loc.settingsListStorageSubtitle,
           onTap: () {
@@ -91,7 +91,7 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
         SettingsTile(
-          iconData: Icons.area_chart,
+          iconData: Icons.area_chart_outlined,
           title: context.loc.settingsListAnalyticsTitle,
           subtitle: context.loc.settingsListAnalyticsSubtitle,
           onTap: () {
@@ -103,7 +103,7 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
         SettingsTile(
-          iconData: Icons.build,
+          iconData: Icons.build_outlined,
           title: context.loc.settingsListDebugTitle,
           subtitle: context.loc.settingsListDebugSubtitle,
           onTap: () {
@@ -115,7 +115,7 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
         SettingsTile(
-          iconData: Icons.science,
+          iconData: Icons.science_outlined,
           title: context.loc.settingsListExperimentsTitle,
           subtitle: context.loc.settingsListExperimentsSubtitle,
           onTap: () {
@@ -143,7 +143,7 @@ class SettingsScreen extends StatelessWidget {
 
         SettingsHeader('Advanced'),
         SettingsTile(
-          iconData: Icons.cloud_upload,
+          iconData: Icons.cloud_upload_outlined,
           title: context.loc.drawerSetup,
           subtitle: '',
           onTap: () {
@@ -151,7 +151,7 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
         SettingsTile(
-          iconData: Icons.share,
+          iconData: Icons.share_outlined,
           title: context.loc.drawerShare,
           onTap: () {
             Share.share('Checkout GitJournal https://gitjournal.io/');
@@ -160,7 +160,7 @@ class SettingsScreen extends StatelessWidget {
         ),
         if (Platform.isAndroid || Platform.isIOS)
           SettingsTile(
-            iconData: Icons.feedback,
+            iconData: Icons.feedback_outlined,
             title: context.loc.drawerRate,
             onTap: () {
               LaunchReview.launch(
@@ -171,7 +171,7 @@ class SettingsScreen extends StatelessWidget {
             },
           ),
         SettingsTile(
-          iconData: Icons.rate_review,
+          iconData: Icons.rate_review_outlined,
           title: context.loc.drawerFeedback,
           onTap: () async {
             await createBugReport(context);
@@ -179,7 +179,7 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
         SettingsTile(
-          iconData: Icons.bug_report,
+          iconData: Icons.bug_report_outlined,
           title: context.loc.drawerBug,
           onTap: () async {
             await createBugReport(context);
@@ -187,14 +187,14 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
         SettingsTile(
-          iconData: Icons.terminal,
+          iconData: Icons.terminal_outlined,
           title: 'Git Terminal',
           onTap: () {
             Navigator.of(context).pushNamed(GitTerminalScreen.routePath);
           },
         ),
         SettingsTile(
-          iconData: Icons.favorite,
+          iconData: Icons.favorite_outline,
           title: context.loc.settingsProjectContribute,
         ),
         SettingsTile(
