@@ -178,49 +178,44 @@ class _FolderViewState extends State<FolderView> {
     var havePinnedNotes =
         _pinnedNotesFolder != null ? !_pinnedNotesFolder!.isEmpty : false;
 
-    return NestedScrollView(
-      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-        return [
-          SliverAppBar(
-            title: inSelectionMode ? Text(title) : const RepoSwitcherButton(),
-            leading: inSelectionMode ? backButton : null,
-            actions: inSelectionMode
-                ? _buildInSelectionNoteActions()
-                : [
-                    ..._buildNoteActions(),
-                    ...mainAppBarActions(context),
-                  ],
-            forceElevated: true,
-          ),
-        ];
-      },
-      floatHeaderSlivers: true,
-      // Stupid scrollbar has a top padding otherwise
-      // - from : https://stackoverflow.com/questions/64404873/remove-the-top-padding-from-scrollbar-when-wrapping-listview
-      body: MediaQuery.removePadding(
-        context: context,
-        removeTop: true,
-        child: Scrollbar(
-          child: Builder(builder: (context) {
-            var view = CustomScrollView(slivers: [
-              const SliverToBoxAdapter(child: SetupGitHostBanner()),
-              if (havePinnedNotes)
-                _SliverHeader(text: context.loc.widgetsFolderViewPinned),
-              if (havePinnedNotes) pinnedFolderView,
-              if (havePinnedNotes)
-                _SliverHeader(text: context.loc.widgetsFolderViewOthers),
-              folderView,
-            ]);
-            if (settings.remoteSyncFrequency == RemoteSyncFrequency.Manual) {
-              return view;
-            }
-            return RefreshIndicator(
-              onRefresh: () => syncRepo(context),
-              child: view,
-            );
-          }),
-        ),
+    // Single CustomScrollView (not NestedScrollView) so the list only
+    // scrolls when content overflows — empty / short lists stay fixed.
+    final slivers = <Widget>[
+      SliverAppBar(
+        pinned: true,
+        floating: true,
+        title: inSelectionMode ? Text(title) : const RepoSwitcherButton(),
+        leading: inSelectionMode ? backButton : null,
+        actions: inSelectionMode
+            ? _buildInSelectionNoteActions()
+            : [
+                ..._buildNoteActions(),
+                ...mainAppBarActions(context),
+              ],
+        forceElevated: true,
       ),
+      const SliverToBoxAdapter(child: SetupGitHostBanner()),
+      if (havePinnedNotes)
+        _SliverHeader(text: context.loc.widgetsFolderViewPinned),
+      if (havePinnedNotes) pinnedFolderView,
+      if (havePinnedNotes)
+        _SliverHeader(text: context.loc.widgetsFolderViewOthers),
+      folderView,
+    ];
+
+    final view = CustomScrollView(
+      // Clamping only: list is not scrollable when content fits (empty /
+      // short lists stay fixed). Sync remains available via the app-bar button.
+      physics: const ClampingScrollPhysics(),
+      slivers: slivers,
+    );
+
+    if (settings.remoteSyncFrequency == RemoteSyncFrequency.Manual) {
+      return Scrollbar(child: view);
+    }
+    return RefreshIndicator(
+      onRefresh: () => syncRepo(context),
+      child: Scrollbar(child: view),
     );
   }
 
