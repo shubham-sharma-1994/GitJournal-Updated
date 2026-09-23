@@ -16,6 +16,7 @@ import 'package:gitjournal/logger/logger.dart';
 import 'package:gitjournal/repository.dart';
 import 'package:gitjournal/settings/storage_config.dart';
 import 'package:gitjournal/setup/clone.dart';
+import 'package:gitjournal/setup/git_https.dart';
 import 'package:gitjournal/setup/clone_auto_select.dart';
 import 'package:gitjournal/utils/utils.dart';
 import 'package:path/path.dart' as p;
@@ -565,8 +566,13 @@ class GitHostSetupScreenState extends State<GitHostSetupScreen> {
     Log.i("RepoPath: $repoPath");
 
     try {
+      final cloneUrl = authenticatedCloneUrl(
+        _gitCloneUrl,
+        gitConfig.httpsToken,
+      );
+      Log.i("Cloning via ${isHttpsCloneUrl(cloneUrl) ? "HTTPS" : "SSH"}");
       await cloneRemote(
-        cloneUrl: _gitCloneUrl,
+        cloneUrl: cloneUrl,
         remoteName: widget.remoteName,
         repoPath: repoPath,
         sshPassword: gitConfig.sshPassword,

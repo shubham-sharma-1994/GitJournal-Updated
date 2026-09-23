@@ -38,7 +38,6 @@ import 'package:gitjournal/settings/settings_git_widgets.dart';
 import 'package:gitjournal/settings/settings_note_metadata.dart';
 import 'package:gitjournal/settings/settings_screen.dart';
 import 'package:gitjournal/settings/widgets/settings_list_preference.dart';
-import 'package:gitjournal/widgets/app_drawer.dart';
 import 'package:gitjournal/widgets/note_delete_dialog.dart';
 import 'package:gitjournal/widgets/rename_dialog.dart';
 import 'package:gitjournal/widgets/setup.dart';
@@ -349,7 +348,6 @@ var allScreens = [
     ),
   ]),
   TestScreenGroup(name: "Misc", screens: [
-    TestScreen(name: "AppDrawer", builder: (_) => AppDrawer()),
     TestScreen(
       name: "Sorting Mode Selection Dialog",
       builder: (_) => SortingModeSelectionDialog(

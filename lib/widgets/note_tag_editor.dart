@@ -6,7 +6,6 @@
 
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gitjournal/l10n.dart';
 
 class NoteTagEditor extends StatefulWidget {
@@ -108,7 +107,7 @@ class _NoteTagEditorState extends State<NoteTagEditor> {
     }
 
     return ListTile(
-      leading: const FaIcon(FontAwesomeIcons.tag),
+      leading: Icon(Icons.label),
       title: Text(tag),
       trailing: Checkbox(value: containsTag, onChanged: (_) => _onTap()),
       onTap: _onTap,

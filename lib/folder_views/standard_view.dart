@@ -5,6 +5,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:gitjournal/design/tokens/spacing_tokens.dart';
 import 'package:gitjournal/core/folder/notes_folder.dart';
 import 'package:gitjournal/core/folder/sorting_mode.dart';
 import 'package:gitjournal/core/note.dart';
@@ -156,7 +157,20 @@ class StandardNoteListTile extends StatelessWidget {
         break;
 
       case StandardViewHeader.TitleGenerated:
-        title = note.title ?? noteSummary;
+        // Prefer explicit title, then summary (async), then first body line /
+        // file name so rows never render a blank title while summary loads.
+        final explicit = note.title?.trim();
+        if (explicit != null && explicit.isNotEmpty) {
+          title = explicit;
+        } else {
+          final summaryLine = noteSummary.trim().split('\n').first.trim();
+          if (summaryLine.isNotEmpty) {
+            title = summaryLine;
+          } else {
+            final bodyLine = note.body.trim().split('\n').first.trim();
+            title = bodyLine.isNotEmpty ? bodyLine : note.fileName;
+          }
+        }
         break;
     }
 
@@ -193,7 +207,7 @@ class StandardNoteListTile extends StatelessWidget {
     ListTile tile;
     if (showSummary) {
       var summary = <Widget>[
-        const SizedBox(height: 8.0),
+        const SizedBox(height: spacingSm),
         HighlightedText(
           text: '$noteSummary\n', // no minLines option
           maxLines: 3,
@@ -244,7 +258,7 @@ class StandardNoteListTile extends StatelessWidget {
         children: <Widget>[
           divider,
           Padding(
-            padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
+            padding: const EdgeInsets.only(top: spacingMd, bottom: spacingMd),
             child: tile,
           ),
           divider,
@@ -256,7 +270,7 @@ class StandardNoteListTile extends StatelessWidget {
         children: <Widget>[
           divider,
           Padding(
-            padding: const EdgeInsets.only(top: 14.0, bottom: 14.0),
+            padding: const EdgeInsets.symmetric(vertical: spacingMd - 2),
             child: tile,
           ),
           divider,

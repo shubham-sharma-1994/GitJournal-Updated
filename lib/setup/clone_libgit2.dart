@@ -51,12 +51,21 @@ Future<void> _clone({
   required String statusFile,
 }) async {
   var bindings = GitBindingsAsync();
-  await bindings.clone(
-    cloneUrl,
-    repoPath,
-    utf8.encode(sshPrivateKey),
-    sshPassword,
-  );
+  try {
+    await bindings.clone(
+      cloneUrl,
+      repoPath,
+      utf8.encode(sshPrivateKey),
+      sshPassword,
+    );
+  } catch (ex) {
+    Log.e("Native clone failed", ex: ex);
+    throw Exception(
+      "Clone failed. If this is GitHub/GitLab, prefer an HTTPS URL "
+      "(https://github.com/user/repo.git) after signing in, or add the "
+      "shown SSH public key as a Deploy Key. Underlying error: $ex",
+    );
+  }
 }
 
 Future<void> _fetch(

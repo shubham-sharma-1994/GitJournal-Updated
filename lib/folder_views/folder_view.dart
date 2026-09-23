@@ -5,6 +5,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:gitjournal/design/tokens/spacing_tokens.dart';
 import 'package:gitjournal/analytics/analytics.dart';
 import 'package:gitjournal/app_router.dart';
 import 'package:gitjournal/core/folder/filtered_notes_folder.dart';
@@ -24,10 +25,12 @@ import 'package:gitjournal/l10n.dart';
 import 'package:gitjournal/repository.dart';
 import 'package:gitjournal/settings/settings.dart';
 import 'package:gitjournal/utils/utils.dart';
-import 'package:gitjournal/widgets/app_bar_menu_button.dart';
-import 'package:gitjournal/widgets/app_drawer.dart';
+import 'package:gitjournal/widgets/main_nav_bar.dart';
+import 'package:gitjournal/widgets/main_app_bar_actions.dart';
+import 'package:gitjournal/widgets/repo_switcher_button.dart';
+import 'package:gitjournal/widgets/setup_git_host_banner.dart';
 import 'package:gitjournal/widgets/folder_selection_dialog.dart';
-import 'package:gitjournal/widgets/new_note_nav_bar.dart';
+import 'package:gitjournal/widgets/new_note_speed_dial.dart';
 import 'package:gitjournal/widgets/note_delete_dialog.dart';
 import 'package:gitjournal/widgets/note_search_delegate.dart';
 import 'package:gitjournal/widgets/sorting_mode_selection_dialog.dart';
@@ -67,6 +70,9 @@ class _FolderViewState extends State<FolderView> {
 
   var _selectedNotes = <Note>[];
   bool get inSelectionMode => _selectedNotes.isNotEmpty;
+
+  /// Controls the FAB speed dial open state.
+  final ValueNotifier<bool> _dialOpen = ValueNotifier(false);
 
   @override
   void initState() {
@@ -108,6 +114,7 @@ class _FolderViewState extends State<FolderView> {
   void dispose() {
     _sortedNotesFolder?.dispose();
     _pinnedNotesFolder?.dispose();
+    _dialOpen.dispose();
 
     super.dispose();
   }
@@ -156,15 +163,12 @@ class _FolderViewState extends State<FolderView> {
     }
 
     var settings = context.watch<Settings>();
-    final showButtomMenuBar = settings.bottomMenuBar;
 
-    // So the FAB doesn't hide parts of the last entry
-    if (!showButtomMenuBar) {
-      folderView = SliverPadding(
-        sliver: folderView,
-        padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 48.0),
-      );
-    }
+    // Keep list clear of the speed-dial FAB.
+    folderView = SliverPadding(
+      sliver: folderView,
+      padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, spacingXl + spacingMd),
+    );
 
     var backButton = IconButton(
       icon: const Icon(Icons.arrow_back),
@@ -174,45 +178,44 @@ class _FolderViewState extends State<FolderView> {
     var havePinnedNotes =
         _pinnedNotesFolder != null ? !_pinnedNotesFolder!.isEmpty : false;
 
-    return NestedScrollView(
-      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-        return [
-          SliverAppBar(
-            title: Text(title),
-            leading: inSelectionMode ? backButton : GJAppBarMenuButton(),
-            actions: inSelectionMode
-                ? _buildInSelectionNoteActions()
-                : _buildNoteActions(),
-            forceElevated: true,
-          ),
-        ];
-      },
-      floatHeaderSlivers: true,
-      // Stupid scrollbar has a top padding otherwise
-      // - from : https://stackoverflow.com/questions/64404873/remove-the-top-padding-from-scrollbar-when-wrapping-listview
-      body: MediaQuery.removePadding(
-        context: context,
-        removeTop: true,
-        child: Scrollbar(
-          child: Builder(builder: (context) {
-            var view = CustomScrollView(slivers: [
-              if (havePinnedNotes)
-                _SliverHeader(text: context.loc.widgetsFolderViewPinned),
-              if (havePinnedNotes) pinnedFolderView,
-              if (havePinnedNotes)
-                _SliverHeader(text: context.loc.widgetsFolderViewOthers),
-              folderView,
-            ]);
-            if (settings.remoteSyncFrequency == RemoteSyncFrequency.Manual) {
-              return view;
-            }
-            return RefreshIndicator(
-              onRefresh: () => syncRepo(context),
-              child: view,
-            );
-          }),
-        ),
+    // Single CustomScrollView (not NestedScrollView) so the list only
+    // scrolls when content overflows — empty / short lists stay fixed.
+    final slivers = <Widget>[
+      SliverAppBar(
+        pinned: true,
+        floating: true,
+        title: inSelectionMode ? Text(title) : const RepoSwitcherButton(),
+        leading: inSelectionMode ? backButton : null,
+        actions: inSelectionMode
+            ? _buildInSelectionNoteActions()
+            : [
+                ..._buildNoteActions(),
+                ...mainAppBarActions(context),
+              ],
+        forceElevated: true,
       ),
+      const SliverToBoxAdapter(child: SetupGitHostBanner()),
+      if (havePinnedNotes)
+        _SliverHeader(text: context.loc.widgetsFolderViewPinned),
+      if (havePinnedNotes) pinnedFolderView,
+      if (havePinnedNotes)
+        _SliverHeader(text: context.loc.widgetsFolderViewOthers),
+      folderView,
+    ];
+
+    final view = CustomScrollView(
+      // Clamping only: list is not scrollable when content fits (empty /
+      // short lists stay fixed). Sync remains available via the app-bar button.
+      physics: const ClampingScrollPhysics(),
+      slivers: slivers,
+    );
+
+    if (settings.remoteSyncFrequency == RemoteSyncFrequency.Manual) {
+      return Scrollbar(child: view);
+    }
+    return RefreshIndicator(
+      onRefresh: () => syncRepo(context),
+      child: Scrollbar(child: view),
     );
   }
 
@@ -249,25 +252,23 @@ class _FolderViewState extends State<FolderView> {
 
   @override
   Widget build(BuildContext context) {
-    var createButton = FloatingActionButton(
-      key: const ValueKey("FAB"),
-      onPressed: () =>
-          _newPost(widget.notesFolder.config.defaultEditor.toEditorType()),
-      child: const Icon(Icons.add),
-    );
-
-    var settings = context.watch<Settings>();
-    final showButtomMenuBar = settings.bottomMenuBar;
+    // Note creation: FAB speed dial only (no duplicate "New" nav slot).
+    Widget? bottom;
+    if (!inSelectionMode) {
+      bottom = const MainNavBar(selectedIndex: MainNavBar.indexHome);
+    }
 
     return Scaffold(
       body: Builder(builder: _buildBody),
-      extendBody: true,
-      drawer: AppDrawer(),
-      floatingActionButton: createButton,
-      floatingActionButtonLocation:
-          showButtomMenuBar ? FloatingActionButtonLocation.endDocked : null,
-      bottomNavigationBar:
-          showButtomMenuBar ? NewNoteNavBar(onPressed: _newPost) : null,
+      extendBody: false,
+      floatingActionButton: inSelectionMode
+          ? null
+          : NewNoteSpeedDial(
+              openCloseDial: _dialOpen,
+              onPressed: _newPost,
+            ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      bottomNavigationBar: bottom,
     );
   }
 
@@ -333,6 +334,7 @@ class _FolderViewState extends State<FolderView> {
     await Navigator.push(context, route);
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
   }
+
 
   Future<void> _sortButtonPressed() async {
     if (_sortedNotesFolder == null) {
@@ -423,29 +425,39 @@ class _FolderViewState extends State<FolderView> {
   List<Widget> _buildNoteActions() {
     final repo = context.watch<GitJournalRepo>();
 
-    var extraActions = PopupMenuButton<DropDownChoices>(
+    // SHU-22 app bar: Search + single Sort&View menu (repo switcher is title).
+    final sortAndView = PopupMenuButton<String>(
       key: const ValueKey("PopupMenu"),
-      onSelected: (DropDownChoices choice) {
-        switch (choice) {
-          case DropDownChoices.SortingOptions:
+      tooltip: 'Sort & view',
+      icon: const Icon(Icons.tune),
+      onSelected: (value) {
+        switch (value) {
+          case 'sort':
             _sortButtonPressed();
             break;
-
-          case DropDownChoices.ViewOptions:
+          case 'layout':
+            _folderViewChooserSelected();
+            break;
+          case 'headers':
             _configureViewButtonPressed();
             break;
         }
       },
-      itemBuilder: (BuildContext context) => <PopupMenuEntry<DropDownChoices>>[
-        PopupMenuItem<DropDownChoices>(
+      itemBuilder: (context) => [
+        PopupMenuItem(
           key: const ValueKey("SortingOptions"),
-          value: DropDownChoices.SortingOptions,
+          value: 'sort',
           child: Text(context.loc.widgetsFolderViewSortingOptions),
         ),
+        PopupMenuItem(
+          key: const ValueKey("FolderViewSelector"),
+          value: 'layout',
+          child: Text(context.loc.widgetsFolderViewViewsSelect),
+        ),
         if (_viewType == FolderViewType.Standard)
-          PopupMenuItem<DropDownChoices>(
+          PopupMenuItem(
             key: const ValueKey("ViewOptions"),
-            value: DropDownChoices.ViewOptions,
+            value: 'headers',
             child: Text(context.loc.widgetsFolderViewViewOptions),
           ),
       ],
@@ -453,13 +465,9 @@ class _FolderViewState extends State<FolderView> {
 
     return <Widget>[
       IconButton(
-        icon: const Icon(Icons.library_books),
-        onPressed: _folderViewChooserSelected,
-        key: const ValueKey("FolderViewSelector"),
-      ),
-      if (repo.remoteGitRepoConfigured) SyncButton(),
-      IconButton(
+        key: const ValueKey("Search"),
         icon: const Icon(Icons.search),
+        tooltip: MaterialLocalizations.of(context).searchFieldLabel,
         onPressed: () {
           logEvent(Event.SearchButtonPressed);
           showSearch(
@@ -471,7 +479,8 @@ class _FolderViewState extends State<FolderView> {
           );
         },
       ),
-      extraActions,
+      sortAndView,
+      if (repo.remoteGitRepoConfigured) SyncButton(),
     ];
   }
 
@@ -563,7 +572,7 @@ class _SliverHeader extends StatelessWidget {
 
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
+        padding: const EdgeInsets.fromLTRB(spacingMd, spacingMd, spacingMd, spacingSm),
         child: Text(text, style: textTheme.titleSmall),
       ),
     );

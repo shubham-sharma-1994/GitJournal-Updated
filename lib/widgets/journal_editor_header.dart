@@ -5,6 +5,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:gitjournal/design/tokens/spacing_tokens.dart';
 
 import 'package:function_types/function_types.dart';
 import 'package:intl/intl.dart';
@@ -40,7 +41,7 @@ class JournalEditorHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         bigNum,
-        const SizedBox(width: 8.0),
+        const SizedBox(width: spacingSm),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -52,7 +53,7 @@ class JournalEditorHeader extends StatelessWidget {
     );
 
     return Padding(
-      padding: const EdgeInsets.only(top: 8.0, bottom: 18.0),
+      padding: const EdgeInsets.only(top: spacingSm, bottom: spacingMd + 2),
       child: GestureDetector(
         onTap: () async {
           var orig = dt;

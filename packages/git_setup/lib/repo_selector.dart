@@ -304,11 +304,11 @@ class _RepoTile extends StatelessWidget {
     var iconsRow = Row(
       children: [
         if (repo.license != null)
-          _IconText(repo.license, FontAwesomeIcons.balanceScale),
+          _IconText(repo.license, Icons.balance),
         if (repo.license != null) const SizedBox(width: 8.0),
-        _IconText(repo.forks.toString(), FontAwesomeIcons.codeBranch),
+        _IconText(repo.forks.toString(), Icons.account_tree),
         const SizedBox(width: 8.0),
-        _IconText(repo.stars.toString(), FontAwesomeIcons.star),
+        _IconText(repo.stars.toString(), Icons.star),
       ],
       crossAxisAlignment: CrossAxisAlignment.center,
     );
@@ -386,7 +386,7 @@ class _IconText extends StatelessWidget {
 
     return Row(
       children: [
-        FaIcon(iconData, size: 16, color: iconColor),
+        Icon(iconData, size: 16, color: iconColor),
         const SizedBox(width: 4.0),
         Text(text, style: textTheme.caption),
       ],

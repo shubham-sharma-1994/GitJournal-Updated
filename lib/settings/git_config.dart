@@ -36,6 +36,8 @@ class GitConfig extends ChangeNotifier
   @override
   var sshPassword = "";
   @override
+  var httpsToken = "";
+  @override
   var sshKeyType = SettingsSSHKey.Default.toEnum();
 
   void load() {
@@ -44,6 +46,7 @@ class GitConfig extends ChangeNotifier
     sshPublicKey = getString("sshPublicKey") ?? sshPublicKey;
     sshPrivateKey = getString("sshPrivateKey") ?? sshPrivateKey;
     sshPassword = getString("sshPassword") ?? sshPassword;
+    httpsToken = getString("httpsToken") ?? httpsToken;
     sshKeyType =
         SettingsSSHKey.fromInternalString(getString("sshKeyType")).toEnum();
   }
@@ -60,6 +63,7 @@ class GitConfig extends ChangeNotifier
     await setString("sshPublicKey", sshPublicKey, def.sshPublicKey);
     await setString("sshPrivateKey", sshPrivateKey, def.sshPrivateKey);
     await setString("sshPassword", sshPassword, def.sshPassword);
+    await setString("httpsToken", httpsToken, def.httpsToken);
     await setString(
       "sshKeyType",
       SettingsSSHKey.fromEnum(sshKeyType).toInternalString(),
@@ -76,6 +80,7 @@ class GitConfig extends ChangeNotifier
       'sshPublicKey': sshPublicKey.isNotEmpty.toString(),
       'sshPrivateKey': sshPrivateKey.isNotEmpty.toString(),
       'sshPassword': sshPassword.isNotEmpty.toString(),
+      'httpsToken': httpsToken.isNotEmpty.toString(),
     };
   }
 }

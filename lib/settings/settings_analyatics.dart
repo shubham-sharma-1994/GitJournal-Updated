@@ -5,7 +5,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gitjournal/analytics/analytics.dart';
 import 'package:gitjournal/l10n.dart';
 import 'package:gitjournal/settings/app_config.dart';
@@ -22,7 +21,7 @@ class SettingsAnalytics extends StatelessWidget {
     var list = ListView(
       children: [
         const Center(
-          child: FaIcon(FontAwesomeIcons.chartArea, size: 64.0 * 2),
+          child: Icon(Icons.area_chart_outlined, size: 64.0 * 2),
         ),
         const Divider(),
         const _AnalyticsSwitchListTile(),

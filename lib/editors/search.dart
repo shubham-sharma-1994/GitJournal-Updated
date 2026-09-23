@@ -1,3 +1,4 @@
+import 'package:gitjournal/design/tokens/motion_tokens.dart';
 /*
  * SPDX-FileCopyrightText: 2021 Vishesh Handa <me@vhanda.in>
  *
@@ -242,7 +243,7 @@ void scrollToSearchResult({
 
   scrollController.animateTo(
     newPosition,
-    duration: const Duration(milliseconds: 300),
+    duration: durationMedium2,
     curve: Easing.legacyDecelerate,
   );
 }
