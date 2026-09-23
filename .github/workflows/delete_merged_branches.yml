@@ -1,17 +1,39 @@
 # SPDX-FileCopyrightText: 2019-2021 Vishesh Handa <me@vhanda.in>
+# SPDX-FileCopyrightText: 2026 Shubham Sharma
 #
 # SPDX-License-Identifier: Apache-2.0
 
 name: delete branch on close pr
-on: 
+on:
   pull_request:
     types: [closed]
-  
+
+# Only delete when the PR was actually merged (not just closed).
+permissions:
+  contents: write
+  pull-requests: read
+
 jobs:
   delete-branch:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-      - name: delete branch
-        uses: SvanBoxel/delete-merged-branch@main
+      - name: Delete merged head branch
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ github.head_ref }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          # Skip protected / default branches
+          DEFAULT=$(gh api "repos/$REPO" --jq .default_branch)
+          if [ -z "$BRANCH" ] || [ "$BRANCH" = "$DEFAULT" ] || [ "$BRANCH" = "master" ] || [ "$BRANCH" = "main" ]; then
+            echo "Skipping delete for branch='$BRANCH'"
+            exit 0
+          fi
+          echo "Deleting origin/$BRANCH ..."
+          # Soft-fail if already deleted or missing
+          gh api -X DELETE "repos/$REPO/git/refs/heads/$BRANCH" || {
+            echo "Branch already gone or not deletable (ok)"
+            exit 0
+          }
