@@ -59,7 +59,7 @@ class Settings extends ChangeNotifier with SettingsSharedPref {
   bool swipeToDelete = true;
   bool emojiParser = true;
 
-  bool bottomMenuBar = true;
+  bool bottomMenuBar = false;
   bool confirmDelete = true;
   bool hardWrap = false;
 

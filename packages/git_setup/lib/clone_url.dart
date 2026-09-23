@@ -55,7 +55,7 @@ class GitCloneUrlPageState extends State<GitCloneUrlPage> {
         autofocus: true,
         style: Theme.of(context).textTheme.titleMedium,
         decoration: const InputDecoration(
-          hintText: 'git@github.com:GitJournal/GitJournal.git',
+          hintText: 'https://github.com/user/notes.git  or  git@github.com:user/notes.git',
         ),
         validator: (s) => isCloneUrlValid(context, s),
         focusNode: inputFormFocus,
@@ -140,7 +140,7 @@ class GitCloneUrlKnownProviderPageState
         autofocus: true,
         style: Theme.of(context).textTheme.titleMedium,
         decoration: const InputDecoration(
-          hintText: 'git@github.com:GitJournal/GitJournal.git',
+          hintText: 'https://github.com/user/notes.git  or  git@github.com:user/notes.git',
         ),
         validator: (s) => isCloneUrlValid(context, s),
         focusNode: inputFormFocus,
@@ -204,8 +204,10 @@ String? isCloneUrlValid(BuildContext context, String? url) {
     return context.loc.setupCloneUrlValidatorInvalid;
   }
 
-  if (result.protocol != 'ssh') {
-    return context.loc.setupCloneUrlValidatorOnlySsh;
+  if (result.protocol != 'ssh' &&
+      result.protocol != 'https' &&
+      result.protocol != 'http') {
+    return context.loc.setupCloneUrlValidatorInvalid;
   }
 
   return null;

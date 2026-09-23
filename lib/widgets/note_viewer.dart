@@ -5,6 +5,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:gitjournal/design/tokens/spacing_tokens.dart';
 import 'package:gitjournal/core/folder/notes_folder.dart';
 import 'package:gitjournal/core/folder/notes_folder_fs.dart';
 import 'package:gitjournal/core/note.dart';
@@ -52,14 +53,14 @@ class NoteViewer extends StatelessWidget {
         children: <Widget>[
           NoteTitleHeader(note.title ?? ""),
           Padding(
-            padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+            padding: const EdgeInsets.symmetric(vertical: spacingSm),
             child: MarkdownRenderer(
               note: note,
               onNoteTapped: (note) =>
                   openNoteEditor(context, note, parentFolder),
             ),
           ),
-          const SizedBox(height: 16.0),
+          const SizedBox(height: spacingMd),
           NoteBacklinkRenderer(
             note: note,
             rootFolder: rootFolder,
@@ -77,7 +78,7 @@ class NoteViewer extends StatelessWidget {
   /*
   Widget _buildFooter(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: spacingSm),
       child: Row(
         children: <Widget>[
           IconButton(
@@ -109,7 +110,7 @@ class NoteTitleHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     var textTheme = Theme.of(context).textTheme;
     return Padding(
-      padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: spacingSm),
       child: Text(header, style: textTheme.titleLarge),
     );
   }

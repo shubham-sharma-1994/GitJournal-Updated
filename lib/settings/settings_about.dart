@@ -5,7 +5,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gitjournal/l10n.dart';
 import 'package:gitjournal/settings/settings_screen.dart';
 import 'package:gitjournal/settings/widgets/version_number_widgit.dart';
@@ -27,7 +26,7 @@ class SettingsAboutPage extends StatelessWidget {
         const Divider(),
         const VersionNumberTile(),
         SettingsTile(
-          iconData: FontAwesomeIcons.userShield,
+          iconData: Icons.shield_outlined,
           title: context.loc.settingsPrivacy,
           subtitle: _privacyUrl.replaceAll('https://', ''),
           onTap: () {
@@ -38,7 +37,7 @@ class SettingsAboutPage extends StatelessWidget {
           },
         ),
         SettingsTile(
-          iconData: FontAwesomeIcons.fileContract,
+          iconData: Icons.description_outlined,
           title: context.loc.settingsTerms,
           subtitle: _termsUrl.replaceAll('https://', ''),
           onTap: () {
@@ -49,7 +48,7 @@ class SettingsAboutPage extends StatelessWidget {
           },
         ),
         SettingsTile(
-          iconData: FontAwesomeIcons.circleInfo,
+          iconData: Icons.info_outline,
           title: context.loc.settingsLicenseTitle,
           subtitle: context.loc.settingsLicenseSubtitle,
           onTap: () {

@@ -5,7 +5,13 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gitjournal/design/tokens/spacing_tokens.dart';
+import 'package:git_setup/screens.dart';
+import 'package:gitjournal/analytics/analytics.dart';
+import 'package:gitjournal/screens/git_terminal_screen.dart';
+import 'package:launch_app_store/launch_app_store.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:universal_io/io.dart' show Platform;
 import 'package:function_types/function_types.dart';
 import 'package:gitjournal/l10n.dart';
 import 'package:gitjournal/logger/debug_screen.dart';
@@ -26,10 +32,10 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var list = ListView(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      padding: const EdgeInsets.symmetric(vertical: spacingMd),
       children: [
         SettingsTile(
-          iconData: FontAwesomeIcons.paintbrush,
+          iconData: Icons.brush_outlined,
           title: context.loc.settingsListUserInterfaceTitle,
           subtitle: context.loc.settingsListUserInterfaceSubtitle,
           onTap: () {
@@ -43,7 +49,7 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
         SettingsTile(
-          iconData: FontAwesomeIcons.git,
+          iconData: Icons.merge_outlined,
           title: context.loc.settingsListGitTitle,
           subtitle: context.loc.settingsListGitSubtitle,
           onTap: () {
@@ -57,7 +63,7 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
         SettingsTile(
-          iconData: FontAwesomeIcons.penToSquare,
+          iconData: Icons.edit_note_outlined,
           title: context.loc.settingsListEditorTitle,
           subtitle: context.loc.settingsListEditorSubtitle,
           onTap: () {
@@ -71,7 +77,7 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
         SettingsTile(
-          iconData: FontAwesomeIcons.hardDrive,
+          iconData: Icons.sd_storage_outlined,
           title: context.loc.settingsListStorageTitle,
           subtitle: context.loc.settingsListStorageSubtitle,
           onTap: () {
@@ -85,7 +91,7 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
         SettingsTile(
-          iconData: FontAwesomeIcons.chartArea,
+          iconData: Icons.area_chart_outlined,
           title: context.loc.settingsListAnalyticsTitle,
           subtitle: context.loc.settingsListAnalyticsSubtitle,
           onTap: () {
@@ -97,7 +103,7 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
         SettingsTile(
-          iconData: FontAwesomeIcons.wrench,
+          iconData: Icons.build_outlined,
           title: context.loc.settingsListDebugTitle,
           subtitle: context.loc.settingsListDebugSubtitle,
           onTap: () {
@@ -109,7 +115,7 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
         SettingsTile(
-          iconData: FontAwesomeIcons.flask,
+          iconData: Icons.science_outlined,
           title: context.loc.settingsListExperimentsTitle,
           subtitle: context.loc.settingsListExperimentsSubtitle,
           onTap: () {
@@ -134,18 +140,61 @@ class SettingsScreen extends StatelessWidget {
             );
           },
         ),
+
+        SettingsHeader('Advanced'),
         SettingsTile(
-          iconData: FontAwesomeIcons.bug,
-          title: context.loc.drawerBug,
-          onTap: () => createBugReport(context),
+          iconData: Icons.cloud_upload_outlined,
+          title: context.loc.drawerSetup,
+          subtitle: '',
+          onTap: () {
+            Navigator.of(context).pushNamed(GitHostSetupScreen.routePath);
+          },
         ),
         SettingsTile(
-          iconData: FontAwesomeIcons.message,
+          iconData: Icons.share_outlined,
+          title: context.loc.drawerShare,
+          onTap: () {
+            Share.share('Checkout GitJournal https://gitjournal.io/');
+            logEvent(Event.DrawerShare);
+          },
+        ),
+        if (Platform.isAndroid || Platform.isIOS)
+          SettingsTile(
+            iconData: Icons.feedback_outlined,
+            title: context.loc.drawerRate,
+            onTap: () {
+              LaunchReview.launch(
+                androidAppId: "io.gitjournal.gitjournal",
+                iOSAppId: "1466519634",
+              );
+              logEvent(Event.DrawerRate);
+            },
+          ),
+        SettingsTile(
+          iconData: Icons.rate_review_outlined,
           title: context.loc.drawerFeedback,
-          onTap: () => createFeedback(context),
+          onTap: () async {
+            await createBugReport(context);
+            logEvent(Event.DrawerFeedback);
+          },
         ),
         SettingsTile(
-          iconData: FontAwesomeIcons.heart,
+          iconData: Icons.bug_report_outlined,
+          title: context.loc.drawerBug,
+          onTap: () async {
+            await createBugReport(context);
+            logEvent(Event.DrawerBugReport);
+          },
+        ),
+        SettingsTile(
+          iconData: Icons.terminal_outlined,
+          title: 'Git Terminal',
+          onTap: () {
+            Navigator.of(context).pushNamed(GitTerminalScreen.routePath);
+          },
+        ),
+        SettingsTile(
+          iconData: Icons.favorite_outline,
           title: context.loc.settingsProjectContribute,
         ),
         SettingsTile(
@@ -184,7 +233,7 @@ class _SettingsSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(spacingSm),
       child: Material(
         elevation: 1.0,
         borderRadius: BorderRadius.circular(25.0),
@@ -196,7 +245,7 @@ class _SettingsSearchBar extends StatelessWidget {
             ),
             filled: true,
             hintText: "Search",
-            fillColor: Colors.white70,
+            fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
             prefixIcon: const Icon(Icons.search),
             // This content padding has no effect if 'prefixIcon' is set!!
             contentPadding: const EdgeInsets.fromLTRB(205.0, 15.0, 20.0, 15.0),
@@ -208,7 +257,7 @@ class _SettingsSearchBar extends StatelessWidget {
 }
 
 class SettingsTile extends StatelessWidget {
-  final Object iconData; // IconData or FaIconData (font_awesome 11)
+  final IconData iconData;
   final String title;
   final String? subtitle;
   final Func0<void>? onTap;
@@ -230,20 +279,13 @@ class SettingsTile extends StatelessWidget {
       color: listTileTheme.textColor,
     );
 
-    // Local var required for type promotion (fields are not promoted)
-    final data = iconData;
-    final Widget icon;
-    if (data is FaIconData) {
-      icon = FaIcon(data, color: textStyle.color);
-    } else {
-      icon = Icon(data as IconData, color: textStyle.color);
-    }
+    final Widget icon = Icon(iconData, color: textStyle.color);
 
     return ListTile(
       leading: icon,
       title: Text(title, style: textStyle),
       subtitle: subtitle != null ? Text(subtitle!) : null,
-      onTap: onTap ?? onTap,
+      onTap: onTap,
     );
   }
 }

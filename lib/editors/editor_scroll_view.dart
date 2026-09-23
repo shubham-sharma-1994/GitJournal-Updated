@@ -5,6 +5,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:gitjournal/design/tokens/spacing_tokens.dart';
 
 /// A Scroll view which occupies the full height of the parent, and doesn't
 /// show the overflow animation.
@@ -17,7 +18,7 @@ class EditorScrollView extends StatelessWidget {
     super.key,
     this.scrollController,
     required this.child,
-    this.padding = const EdgeInsets.all(16.0),
+    this.padding = const EdgeInsets.all(spacingMd),
   });
 
   @override

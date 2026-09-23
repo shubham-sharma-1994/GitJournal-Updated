@@ -17,6 +17,7 @@ import 'package:gitjournal/iap/purchase_thankyou_screen.dart';
 import 'package:gitjournal/logger/logger.dart';
 import 'package:gitjournal/repository.dart';
 import 'package:gitjournal/screens/error_screen.dart';
+import 'package:gitjournal/screens/git_terminal_screen.dart';
 import 'package:gitjournal/screens/home_screen.dart';
 import 'package:gitjournal/screens/onboarding_screens.dart';
 import 'package:gitjournal/screens/tag_listing.dart';
@@ -41,6 +42,7 @@ class AppRoute {
     PurchaseScreen.routePath,
     PurchaseThankYouScreen.routePath,
     ErrorScreen.routePath,
+    GitTerminalScreen.routePath,
   ];
 }
 
@@ -140,6 +142,8 @@ class AppRouter {
         return PurchaseThankYouScreen();
       case ErrorScreen.routePath:
         return const ErrorScreen();
+      case GitTerminalScreen.routePath:
+        return const GitTerminalScreen();
     }
 
     if (route.startsWith(AppRoute.NewNotePrefix)) {
