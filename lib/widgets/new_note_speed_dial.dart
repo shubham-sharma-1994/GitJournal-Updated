@@ -12,8 +12,8 @@ import 'package:gitjournal/l10n.dart';
 
 /// Speed-dial FAB for creating Markdown / Checklist / Journal notes.
 ///
-/// Controlled externally via [openCloseDial] so the nav-bar "New" slot can
-/// toggle the same dial (scrim + staggered children from flutter_speed_dial).
+/// Controlled externally via [openCloseDial] so tests or future entry points can
+/// toggle the dial (scrim + staggered children from flutter_speed_dial).
 class NewNoteSpeedDial extends StatelessWidget {
   final ValueNotifier<bool> openCloseDial;
   final Func1<EditorType, void> onPressed;
