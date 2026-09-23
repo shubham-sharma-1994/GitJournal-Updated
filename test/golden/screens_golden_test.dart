@@ -248,9 +248,7 @@ void main() {
           child: Scaffold(
             appBar: AppBar(title: const Text('Nav')),
             body: const Center(child: Text('body')),
-            bottomNavigationBar: MainNavBar(
-              onNewNoteTap: () {},
-            ),
+            bottomNavigationBar: const MainNavBar(),
           ),
           themeName: v.theme,
           locale: v.locale,

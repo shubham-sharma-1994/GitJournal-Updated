@@ -71,7 +71,7 @@ class _FolderViewState extends State<FolderView> {
   var _selectedNotes = <Note>[];
   bool get inSelectionMode => _selectedNotes.isNotEmpty;
 
-  /// Shared with the nav-bar "New" slot (SHU-23).
+  /// Controls the FAB speed dial open state.
   final ValueNotifier<bool> _dialOpen = ValueNotifier(false);
 
   @override
@@ -257,14 +257,10 @@ class _FolderViewState extends State<FolderView> {
 
   @override
   Widget build(BuildContext context) {
-    // SHU-23: speed dial (FAB) + 4th nav "New" share [_dialOpen].
-    // Old NewNoteNavBar / modal type picker removed.
+    // Note creation: FAB speed dial only (no duplicate "New" nav slot).
     Widget? bottom;
     if (!inSelectionMode) {
-      bottom = MainNavBar(
-        selectedIndex: MainNavBar.indexHome,
-        onNewNoteTap: () => _dialOpen.value = !_dialOpen.value,
-      );
+      bottom = const MainNavBar(selectedIndex: MainNavBar.indexHome);
     }
 
     return Scaffold(
