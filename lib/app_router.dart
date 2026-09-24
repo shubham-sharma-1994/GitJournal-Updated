@@ -76,9 +76,13 @@ class AppRouter {
     Func0<void> callbackIfUsedShared,
   ) {
     var route = routeSettings.name ?? "";
-    if (route == FolderListingScreen.routePath ||
-        route == TagListingScreen.routePath ||
-        route.startsWith(AppRoute.NewNotePrefix)) {
+    // Main bottom-nav destinations must share the same transition.
+    // Mixing MaterialPageRoute (platform slide) for All Notes (/) with
+    // Fade for Folders/Tags caused a visible jump on pushReplacementNamed.
+    final isMainNavDestination = route == HomeScreen.routePath ||
+        route == FolderListingScreen.routePath ||
+        route == TagListingScreen.routePath;
+    if (isMainNavDestination || route.startsWith(AppRoute.NewNotePrefix)) {
       return PageRouteBuilder(
         settings: routeSettings,
         pageBuilder: (_, __, ___) => screenForRoute(
@@ -89,6 +93,8 @@ class AppRouter {
           sharedImages,
           callbackIfUsedShared,
         )!,
+        transitionDuration: const Duration(milliseconds: 180),
+        reverseTransitionDuration: const Duration(milliseconds: 150),
         transitionsBuilder: (_, anim, __, child) {
           return FadeTransition(opacity: anim, child: child);
         },
