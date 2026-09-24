@@ -1,4 +1,5 @@
 # SPDX-FileCopyrightText: 2019-2021 Vishesh Handa <me@vhanda.in>
+# SPDX-FileCopyrightText: 2026 Shubham Sharma
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -12,32 +13,74 @@ on:
 jobs:
   website:
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - name: Dispatch Event to GitJournal.io
-        run: 'curl -X POST ''https://api.github.com/repos/GitJournal/gitjournal.io/actions/workflows/main.yml/dispatches'' -u "vHanda:${{secrets.ACCESS_TOKEN_GITHUB}}" -H "Content-Type: application/json" --data ''{"ref": "master"}'''
         env:
           ACCESS_TOKEN_GITHUB: ${{ secrets.ACCESS_TOKEN_GITHUB }}
+        run: |
+          if [ -z "${ACCESS_TOKEN_GITHUB:-}" ]; then
+            echo "ACCESS_TOKEN_GITHUB not set — skip website dispatch (fork)"
+            exit 0
+          fi
+          curl -fsS -X POST \
+            "https://api.github.com/repos/GitJournal/gitjournal.io/actions/workflows/main.yml/dispatches" \
+            -u "vHanda:${ACCESS_TOKEN_GITHUB}" \
+            -H "Content-Type: application/json" \
+            --data '{"ref": "master"}' || {
+              echo "Website dispatch failed (non-fatal for this fork)"
+              exit 0
+            }
 
   fdroid:
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - name: Dispatch Event to FDroid Repo
-        run: 'curl -X POST ''https://api.github.com/repos/GitJournal/fdroid/actions/workflows/update_repo.yml/dispatches'' -u "vHanda:${{secrets.ACCESS_TOKEN_GITHUB}}" -H "Content-Type: application/json" --data ''{"ref": "master"}'''
         env:
           ACCESS_TOKEN_GITHUB: ${{ secrets.ACCESS_TOKEN_GITHUB }}
+        run: |
+          if [ -z "${ACCESS_TOKEN_GITHUB:-}" ]; then
+            echo "ACCESS_TOKEN_GITHUB not set — skip F-Droid dispatch (fork)"
+            exit 0
+          fi
+          curl -fsS -X POST \
+            "https://api.github.com/repos/GitJournal/fdroid/actions/workflows/update_repo.yml/dispatches" \
+            -u "vHanda:${ACCESS_TOKEN_GITHUB}" \
+            -H "Content-Type: application/json" \
+            --data '{"ref": "master"}' || {
+              echo "F-Droid dispatch failed (non-fatal for this fork)"
+              exit 0
+            }
 
   poeditor:
     runs-on: ubuntu-latest
+    # Upstream POEditor + git-crypt secrets are not available on this fork.
+    # Do not fail the whole Triggers workflow when they are missing.
+    continue-on-error: true
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Deps
         run: sudo apt-get update && sudo apt-get install -y git-crypt
       - name: Unlock Secrets
-        run: ./scripts/decrypt_secrets.sh
+        id: unlock
         env:
           GITCRYPT_KEY: ${{ secrets.GITCRYPT_KEY }}
+        run: |
+          if [ -z "${GITCRYPT_KEY:-}" ]; then
+            echo "GITCRYPT_KEY not set — skip POEditor (fork without upstream secrets)"
+            echo "skipped=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if ! ./scripts/decrypt_secrets.sh; then
+            echo "git-crypt unlock failed — skip POEditor"
+            echo "skipped=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "skipped=false" >> "$GITHUB_OUTPUT"
       - name: Update Translations
+        if: steps.unlock.outputs.skipped != 'true'
         run: ./scripts/upload_translation_en.sh
